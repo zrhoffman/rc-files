@@ -1,4 +1,5 @@
 set clipboard=unnamed,unnamedplus
+set noswapfile
 set nocompatible
 filetype off
 
