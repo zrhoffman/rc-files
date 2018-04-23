@@ -48,6 +48,7 @@ runtime! ftplugin/man.vim
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 "autocompletion
+Plugin 'valloric/YouCompleteMe'
 Plugin 'roxma/nvim-completion-manager'
 Plugin 'racer-rust/vim-racer'
 Plugin 'roxma/nvim-cm-racer'
