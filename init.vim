@@ -7,8 +7,6 @@ set statusline+=col:\ %c,
 filetype plugin on
 
 let &termencoding = &encoding
-set encoding=utf-8
-
 set encoding=utf-8 nobomb
 syntax on
 filetype plugin indent on 
