@@ -1,6 +1,6 @@
 if filereadable("composer.json")
     "For phpcomplete-extended
-    autocmd  FileType  php setlocal omnifunc=phpcomplete_extended#CompletePHP
+    autocmd  FileType  php set omnifunc=phpcomplete_extended#CompletePHP
     let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
     "My setup
     let g:phpcomplete_index_composer_command = "composer"
@@ -13,6 +13,7 @@ else
     "For phpcomplete
     let g:phpcomplete_parse_docblock_comments = 1
     let g:phpcomplete_search_tags_for_variables = 1
+    autocmd  FileType  php set omnifunc=phpcomplete#CompletePHP
     Bundle 'shawncplus/phpcomplete.vim'
     echo system("mv ~/.vim/unused/* ~/.vim/bundle")
     echo system("mv ~/.vim/bundle/phpcomplete-extended* ~/.vim/unused")
