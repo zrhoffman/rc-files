@@ -1,3 +1,7 @@
+runtime! ftplugin/man.vim
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
 if filereadable("composer.json")
     "For phpcomplete-extended
     autocmd  FileType  php set omnifunc=phpcomplete_extended#CompletePHP
@@ -29,7 +33,8 @@ Bundle 'tobyS/pdv'
 Bundle 'willdurand/vim-symfony'
 Bundle 'squizlabs/PHP_CodeSniffer'
 Bundle "joonty/vdebug"
-vundle#end
+call vundle#end()
+
 " PHP documenter script bound to Control-P
 let g:pdv_template_direrrorformat  = $HOME ."/.vim/bundle/pdv/templates_snip"
 "autocmd FileType php inoremap <C-p> <ESC>:call pdv#DocumentCurrentLine()<CR>i
