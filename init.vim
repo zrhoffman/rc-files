@@ -51,6 +51,9 @@ set laststatus=2
 runtime! ftplugin/man.vim
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+"vimball
+Plugin 'vim-scripts/Vimball'
+
 "autocompletion
 Plugin 'valloric/YouCompleteMe'
 Plugin 'roxma/nvim-completion-manager'
