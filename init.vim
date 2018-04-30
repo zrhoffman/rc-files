@@ -86,6 +86,9 @@ set rtp+=~/.vim/bundle/gdb.vim/plugin/gdb.vim
 let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 let g:racer_experimental_completer = 1
 
+"Vim linting
+Plugin 'ynkdir/vim-vimlparser'
+Plugin 'syngan/vim-vimlint'
 
 "RLS stuff
 "au FileType rust let g:LanguageClient_serverCommands = {
@@ -137,6 +140,18 @@ if exists("g:loaded_syntastic_rust_cargo_checker")
     finish
 endif
 let g:loaded_syntastic_rust_cargo_checker = 1
+
+" Syntastic syntax checkers:
+" Ansible       ansible-lint        pacman
+" CSS           CSSLint             AUR
+" Dockerfile    dockerfile_lint     lol npm
+" HTML          tidy                pacman
+" JS            jshint              lol npm
+" JSON          jsonlint            npm + fiddling
+" Markdown      mdl                 AUR
+" shell         ShellCheck          AUR
+" PHP           phpmd               composer
+" Vim           vimlint/vimlparser  vundle
 
 let s:save_cpo = &cpo
 set cpo&vim
