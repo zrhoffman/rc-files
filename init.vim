@@ -64,7 +64,10 @@ Plugin 'roxma/nvim-cm-racer'
 "linting
 Plugin 'vim-syntastic/syntastic'
 "debugging
-Plugin 'vim-scripts/Conque-GDB'
+"vimscript is more up-to-date (unless you find another repo)
+"Plugin 'vim-scripts/Conque-GDB'
+"Bundle 'dbgx/gdb.vim'
+Bundle 'dbgx/lldb.nvim'
 
 "let Vundle manage Vundle, required
 Bundle 'gmarik/Vundle.vim'
@@ -78,6 +81,7 @@ Bundle 'henrik/vim-qargs'
 Bundle 'henrik/git-grep-vim'
 call vundle#end()            " required
 
+set rtp+=~/.vim/bundle/gdb.vim/plugin/gdb.vim
 "Rust section begin
 let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 let g:racer_experimental_completer = 1
@@ -112,6 +116,18 @@ let g:rustfmt_autosave = 1
 nnoremap <silent><buffer> <Plug>(rust-def-tab)
         \ :tab split<CR>:call racer#GoToDefinition()<CR>
 au FileType rust nmap gs <Plug>(rust-def-tab)
+
+au FileType rust    nnoremap <Leader>g :LLsession new<CR>
+"au FileType rust    nmap <M-b> <Plug>LLBreakSwitch
+au FileType rust    nmap <S-F9> <Plug>LLBreakSwitch
+au FileType rust    vmap <F2> <Plug>LLStdInSelected
+au FileType rust    nnoremap <F4> :LLstdin<CR>
+au FileType rust    nnoremap <F5> :w<CR>:LLmode debug<CR>
+au FileType rust    nnoremap <S-F5> :LLmode code<CR>
+au FileType rust    nnoremap <F8> :LL continue<CR>
+au FileType rust    nnoremap <S-F8> :LL process interrupt<CR>
+au FileType rust    nnoremap <F9> :LL print <C-R>=expand('<cword>')<CR>
+au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
 
 "So I can build stuff
 runtime! compiler/cargo.vim
@@ -172,7 +188,7 @@ runtime! plugin/syntastic/*.vim
 
 augroup CargoLoader
     au FileType rust autocmd BufEnter * call <SID>LoadCargo()
-    autocmd BufEnter * ConqueGdbExe rust-gdb
+    "au FileType rust autocmd BufEnter * ConqueGdbExe rust-gdb
 augroup end
 
 "The RLS thing too
