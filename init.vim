@@ -81,7 +81,6 @@ Bundle 'henrik/vim-qargs'
 Bundle 'henrik/git-grep-vim'
 call vundle#end()            " required
 
-set rtp+=~/.vim/bundle/gdb.vim/plugin/gdb.vim
 "Rust section begin
 let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 let g:racer_experimental_completer = 1
