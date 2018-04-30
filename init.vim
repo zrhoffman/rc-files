@@ -148,7 +148,7 @@ let g:loaded_syntastic_rust_cargo_checker = 1
 " HTML          tidy                pacman
 " JS            jshint              lol npm
 " JSON          jsonlint            npm + fiddling
-" Markdown      mdl                 AUR
+" Markdown      mdl                 gem
 " shell         ShellCheck          AUR
 " PHP           phpmd               composer
 " Vim           vimlint/vimlparser  vundle
