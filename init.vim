@@ -50,44 +50,41 @@ set laststatus=2
 
 runtime! ftplugin/man.vim
 set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin()
 "vimball
-Plugin 'vim-scripts/Vimball'
+Plug 'vim-scripts/Vimball'
 
 "RLS, which is better than just racer
 "Plugin 'autozimu/LanguageClient-neovim'
 "autocompletion
-Plugin 'valloric/YouCompleteMe'
-Plugin 'roxma/nvim-completion-manager'
-Plugin 'racer-rust/vim-racer'
-Plugin 'roxma/nvim-cm-racer'
+Plug 'valloric/YouCompleteMe'
+Plug 'roxma/nvim-completion-manager'
+Plug 'racer-rust/vim-racer'
+Plug 'roxma/nvim-cm-racer'
 "linting
-Plugin 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 "debugging
 "vimscript is more up-to-date (unless you find another repo)
 "Plugin 'vim-scripts/Conque-GDB'
 "Bundle 'dbgx/gdb.vim'
-Bundle 'dbgx/lldb.nvim'
-
-"let Vundle manage Vundle, required
-Bundle 'gmarik/Vundle.vim'
+Plug 'dbgx/lldb.nvim'
 
 "These are all one thing
-Bundle 'Shougo/vimproc.vim'
-Bundle 'Shougo/unite.vim'
+Plug 'Shougo/vimproc.vim'
+Plug 'Shougo/unite.vim'
 
 "Project-wide find/replace
-Bundle 'henrik/vim-qargs'
-Bundle 'henrik/git-grep-vim'
-call vundle#end()            " required
+Plug 'henrik/vim-qargs'
+Plug 'henrik/git-grep-vim'
+
+"Vim linting
+Plug 'ynkdir/vim-vimlparser'
+Plug 'syngan/vim-vimlint'
+call plug#end()
 
 "Rust section begin
 let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 let g:racer_experimental_completer = 1
-
-"Vim linting
-Plugin 'ynkdir/vim-vimlparser'
-Plugin 'syngan/vim-vimlint'
 
 "RLS stuff
 "au FileType rust let g:LanguageClient_serverCommands = {
