@@ -51,6 +51,19 @@ set laststatus=2
 runtime! ftplugin/man.vim
 set rtp+=~/.vim/bundle/Vundle.vim
 call plug#begin()
+
+" PHP Language server
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'}
+"
+" Autocomplete
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+Plug 'autozimu/LanguageClient-neovim'
+Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'}
+
 "vimball
 Plug 'vim-scripts/Vimball'
 
@@ -81,6 +94,32 @@ Plug 'henrik/git-grep-vim'
 Plug 'ynkdir/vim-vimlparser'
 Plug 'syngan/vim-vimlint'
 call plug#end()
+
+" PLUGIN: vim-lsp
+" Register server
+" This thing is magic, I got it from https://github.com/prabirshrestha/vim-lsp/issues/32#issuecomment-325218962
+au User lsp_setup call lsp#register_server({
+     \ 'name': 'php-language-server',
+     \ 'cmd': {server_info->['php', expand('~/.config/nvim/plugged/php-language-server/bin/php-language-server.php')]},
+    \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'composer.json'))},
+     \ 'whitelist': ['php'],
+     \ })
+
+nnoremap <buffer><silent> <c-]>  :tab split<cr>:LspDefinition<cr>
+nnoremap <buffer><silent> K :LspHover<cr>
+
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('~/vim-lsp.log')
+
+" for asyncomplete.vim log
+let g:asyncomplete_auto_popup=1
+let g:asyncomplete_remove_duplicates=1
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+autocmd FileType php setlocal omnifunc=lsp#complete
+let g:asyncomplete_log_file = expand('~/asyncomplete.log')
+
+imap <C-Space> <Plug>(asyncomplete_force_refresh)
+imap <Nul> <Plug>(asyncomplete_force_refresh)
 
 "Rust section begin
 let g:racer_cmd = expand("~")."/.cargo/bin/racer"
