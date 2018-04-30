@@ -54,6 +54,8 @@ call vundle#begin()
 "vimball
 Plugin 'vim-scripts/Vimball'
 
+"RLS, which is better than just racer
+"Plugin 'autozimu/LanguageClient-neovim'
 "autocompletion
 Plugin 'valloric/YouCompleteMe'
 Plugin 'roxma/nvim-completion-manager'
@@ -80,9 +82,24 @@ call vundle#end()            " required
 let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 let g:racer_experimental_completer = 1
 
-let mapleader = "\\"
+
+"RLS stuff
+"au FileType rust let g:LanguageClient_serverCommands = {
+"    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+"    \ }
+"au FileType rust nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+"au FileType rust nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+"au FileType rust nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+
+" Also for RLS
+" Always draw sign column. Prevent buffer moving when adding/deleting sign.
+"set signcolumn=yes
+
+let g:mapleader = "\\"
 let g:echodoc_enable_at_startup = 1
 set completeopt+=noinsert
+"RLS autocomplete
+"set completefunc=LanguageClient#complete
 
 au FileType rust nmap gd <Plug>(rust-def)
 "au FileType rust nmap gs <Plug>(rust-def-split)
@@ -157,6 +174,12 @@ augroup CargoLoader
     au FileType rust autocmd BufEnter * call <SID>LoadCargo()
     autocmd BufEnter * ConqueGdbExe rust-gdb
 augroup end
+
+"The RLS thing too
+"augroup filetype_rust
+"    autocmd!
+"    autocmd BufReadPost *.rs setlocal filetype=rust
+"augroup END
 
 "Linting
 set statusline+=%#warningmsg#
