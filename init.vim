@@ -3,6 +3,8 @@ set noswapfile
 set nocompatible
 filetype off
 
+"fast escape key (though tmux.conf needs to be changed too)
+set timeoutlen=1000 ttimeoutlen=0
 set statusline+=col:\ %c,
 
 filetype plugin on
