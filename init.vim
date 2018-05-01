@@ -83,7 +83,7 @@ Plug 'roxma/nvim-cm-racer'
 "linting
 Plug 'vim-syntastic/syntastic'
 "debugging
-Plug 'dbgx/lldb.nvim'
+Plug 'dbgx/lldb.nvim' "you need to run UpdateRemotePlugins after installing this for it to work
 
 "These are all one thing
 Plug 'Shougo/vimproc.vim'
