@@ -98,6 +98,9 @@ Plug 'ynkdir/vim-vimlparser'
 Plug 'syngan/vim-vimlint'
 call plug#end()
 
+"Everything after this point is plugin and language/filetype-specific
+"configuration
+"
 " PLUGIN: vim-lsp
 " Register server
 " This thing is magic, I got it from https://github.com/prabirshrestha/vim-lsp/issues/32#issuecomment-325218962
