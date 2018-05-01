@@ -83,9 +83,6 @@ Plug 'roxma/nvim-cm-racer'
 "linting
 Plug 'vim-syntastic/syntastic'
 "debugging
-"vimscript is more up-to-date (unless you find another repo)
-"Plugin 'vim-scripts/Conque-GDB'
-"Bundle 'dbgx/gdb.vim'
 Plug 'dbgx/lldb.nvim'
 
 "These are all one thing
@@ -244,7 +241,6 @@ runtime! plugin/syntastic/*.vim
 
 augroup CargoLoader
     au FileType rust autocmd BufEnter * call <SID>LoadCargo()
-    "au FileType rust autocmd BufEnter * ConqueGdbExe rust-gdb
 augroup end
 
 "The RLS thing too
