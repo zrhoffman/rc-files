@@ -61,7 +61,7 @@ call plug#begin()
 " PHP Language server
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
-Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'}
+Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'} "If this doesn't work for some reason, you need to go into the php-language-server plugin folder and do a composer install
 "
 " Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -76,7 +76,7 @@ Plug 'vim-scripts/Vimball'
 "RLS, which is better than just racer
 "Plugin 'autozimu/LanguageClient-neovim'
 "autocompletion
-Plug 'valloric/YouCompleteMe'
+Plug 'valloric/YouCompleteMe' "you have to go into the YouCompleteMe plugin folder and run install.py
 Plug 'roxma/nvim-completion-manager'
 Plug 'racer-rust/vim-racer'
 Plug 'roxma/nvim-cm-racer'
