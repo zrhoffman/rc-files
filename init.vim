@@ -104,10 +104,20 @@ call plug#end()
 " PLUGIN: vim-lsp
 " Register server
 " This thing is magic, I got it from https://github.com/prabirshrestha/vim-lsp/issues/32#issuecomment-325218962
+function GetPLSPath()
+    let composer_path = lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(),'composer.json')
+    if exists(composer_path)
+        let return_path = composer_path
+    else
+        let return_path = system('git rev-parse --show-toplevel')
+    endif
+    return return_path
+endfunction
+
 au User lsp_setup call lsp#register_server({
      \ 'name': 'php-language-server',
      \ 'cmd': {server_info->['php', expand('~/.config/nvim/plugged/php-language-server/bin/php-language-server.php')]},
-    \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'composer.json'))},
+    \ 'root_uri':{server_info->lsp#utils#path_to_uri(GetPLSPath()[:-2])},
      \ 'whitelist': ['php'],
      \ })
 
