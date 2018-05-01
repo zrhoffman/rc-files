@@ -47,6 +47,12 @@ autocmd VimLeave * call system("xsel -ib", getreg('+'))
 set statusline+=%F
 set laststatus=2
 
+"neovim stuff
+"because neovim has terrible colors
+"It turns out peachpuff is the vim default one. Great.
+colorscheme peachpuff
+"because they made search yellow by default
+hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
 
 runtime! ftplugin/man.vim
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -258,10 +264,3 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
 " Rust section end
-
-"neovim stuff
-"because neovim has terrible colors
-"It turns out peachpuff is the vim default one. Great.
-colorscheme peachpuff
-"because they made search yellow by default
-hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
