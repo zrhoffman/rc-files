@@ -121,8 +121,8 @@ au User lsp_setup call lsp#register_server({
      \ 'whitelist': ['php'],
      \ })
 
-nnoremap <buffer><silent> <c-]>  :tab split<cr>:LspDefinition<cr>
-nnoremap <buffer><silent> K :LspHover<cr>
+nnoremap <c-]>  :tab split<cr>:LspDefinition<cr>
+nnoremap K :LspHover<cr>
 
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
