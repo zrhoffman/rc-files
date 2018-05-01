@@ -14,7 +14,7 @@ filetype plugin on
 let &termencoding = &encoding
 set encoding=utf-8 nobomb
 syntax on
-filetype plugin indent on 
+filetype plugin indent on
 set number
 
 " Added 12/10-2014 and it works in cygwinvim.bat now!
