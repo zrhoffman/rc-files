@@ -1,7 +1,6 @@
 set clipboard=unnamed,unnamedplus
 set noswapfile
 set nocompatible
-filetype off
 
 "fast escape key (though tmux.conf needs to be changed too)
 set timeoutlen=1000 ttimeoutlen=0
@@ -12,8 +11,6 @@ set statusline+=col:\ %c,
 "Now I can always see the filename
 set statusline+=%F
 set laststatus=2
-
-filetype plugin on
 
 let &termencoding = &encoding
 set encoding=utf-8 nobomb
