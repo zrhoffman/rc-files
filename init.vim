@@ -171,7 +171,6 @@ nnoremap <silent><buffer> <Plug>(rust-def-tab)
 au FileType rust nmap gs <Plug>(rust-def-tab)
 
 au FileType rust    nnoremap <Leader>g :LLsession new<CR>
-"au FileType rust    nmap <M-b> <Plug>LLBreakSwitch
 au FileType rust    nmap <S-F9> <Plug>LLBreakSwitch
 au FileType rust    vmap <F2> <Plug>LLStdInSelected
 au FileType rust    nnoremap <F4> :LLstdin<CR>
