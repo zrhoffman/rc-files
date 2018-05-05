@@ -101,11 +101,11 @@ function GetPLSPath()
 endfunction
 
 au User lsp_setup call lsp#register_server({
-     \ 'name': 'php-language-server',
-     \ 'cmd': {server_info->['php', expand('~/.config/nvim/plugged/php-language-server/bin/php-language-server.php')]},
+    \ 'name': 'php-language-server',
+    \ 'cmd': {server_info->['php', expand('~/.config/nvim/plugged/php-language-server/bin/php-language-server.php')]},
     \ 'root_uri':{server_info->lsp#utils#path_to_uri(GetPLSPath()[:-2])},
-     \ 'whitelist': ['php'],
-     \ })
+    \ 'whitelist': ['php'],
+    \ })
 
 nnoremap <c-]>  :tab split<cr>:LspDefinition<cr>
 nnoremap K :LspHover<cr>
