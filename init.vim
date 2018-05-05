@@ -208,19 +208,6 @@ au FileType rust    nnoremap <S-F8> :LL process interrupt<CR>
 au FileType rust    nnoremap <F9> :LL print <C-R>=expand('<cword>')<CR>
 au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
 
-" Syntastic syntax checkers:
-" Ansible       ansible-lint        pacman
-" CSS           CSSLint             AUR
-" Dockerfile    dockerfile_lint     lol npm
-" HTML          tidy                pacman
-" JS            jshint              lol npm
-" JSON          jsonlint            npm + fiddling
-" Markdown      mdl                 gem
-" shell         ShellCheck          AUR
-" PHP           phpmd               composer
-" Vim           vimlint/vimlparser  vundle
-runtime! plugin/syntastic/*.vim
-
 function! <SID>LoadCargo()
     if exists("g:loaded_syntastic_rust_cargo_checker")
         return
@@ -244,6 +231,20 @@ au FileType rust call <SID>LoadCargo()
 "Rust section end
 
 "Linting
+runtime! plugin/syntastic/*.vim
+
+" Syntastic syntax checkers:
+" Ansible       ansible-lint        pacman
+" CSS           CSSLint             AUR
+" Dockerfile    dockerfile_lint     lol npm
+" HTML          tidy                pacman
+" JS            jshint              lol npm
+" JSON          jsonlint            npm + fiddling
+" Markdown      mdl                 gem
+" shell         ShellCheck          AUR
+" PHP           phpmd               composer
+" Vim           vimlint/vimlparser  vundle
+
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
