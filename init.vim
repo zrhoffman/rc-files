@@ -226,10 +226,10 @@ au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()
 runtime! plugin/syntastic/*.vim
 
 function! <SID>LoadCargo()
-    if exists("g:loaded_cargo")
+    if exists("g:loaded_syntastic_rust_cargo_checker")
         return
     endif
-    let g:loaded_cargo = 1
+    let g:loaded_syntastic_rust_cargo_checker = 1
     "In rust-lang/rust.vim
     runtime! syntax_checkers/rust/cargo.vim
     "So I can build stuff
