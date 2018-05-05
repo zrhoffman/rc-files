@@ -9,6 +9,10 @@ set timeoutlen=1000 ttimeoutlen=0
 "print the column number in the statusline
 set statusline+=col:\ %c,
 
+"Now I can always see the filename
+set statusline+=%F
+set laststatus=2
+
 filetype plugin on
 
 let &termencoding = &encoding
@@ -29,10 +33,6 @@ set guifont=Monospace\ 15
 
 " Clipboard stays after exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
-
-"Now I can always see the filename
-set statusline+=%F
-set laststatus=2
 
 "neovim stuff
 "because neovim has terrible colors
