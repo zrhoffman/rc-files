@@ -46,14 +46,14 @@ Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'} "If this doesn't work for some reason, you need to go into the php-language-server plugin folder and do a composer install
 "
-" Autocomplete
+"Autocomplete
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 Plug 'autozimu/LanguageClient-neovim'
 Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'}
 
-"vimball
+"Extract vimballs from www.vim.org
 Plug 'vim-scripts/Vimball'
 
 "RLS, which is better than just racer
@@ -77,14 +77,15 @@ Plug 'Shougo/unite.vim'
 Plug 'henrik/vim-qargs'
 Plug 'henrik/git-grep-vim'
 
-"Vim linting
+"Vimscript linting
 Plug 'ynkdir/vim-vimlparser'
 Plug 'syngan/vim-vimlint'
 call plug#end()
 
 "Everything after this point is plugin and language/filetype-specific
 "configuration
-"
+
+"PHP section start
 " PLUGIN: vim-lsp
 " Register server
 " This thing is magic, I got it from https://github.com/prabirshrestha/vim-lsp/issues/32#issuecomment-325218962
@@ -105,8 +106,8 @@ au User lsp_setup call lsp#register_server({
     \ 'whitelist': ['php'],
     \ })
 
-nnoremap <c-]>  :tab split<cr>:LspDefinition<cr>
-nnoremap K :LspHover<cr>
+nnoremap <c-]>  :tab split<CR>:LspDefinition<CR>
+nnoremap K :LspHover<CR>
 
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
@@ -120,6 +121,7 @@ let g:asyncomplete_log_file = expand('~/asyncomplete.log')
 
 imap <C-Space> <Plug>(asyncomplete_force_refresh)
 imap <Nul> <Plug>(asyncomplete_force_refresh)
+"PHP section end
 
 "Rust section begin
 au FileType rust let g:racer_cmd = expand("~")."/.cargo/bin/racer"
@@ -233,6 +235,7 @@ au FileType rust runtime! compiler/cargo.vim
 "    autocmd!
 "    autocmd BufReadPost *.rs setlocal filetype=rust
 "augroup END
+"Rust section end
 
 "Linting
 set statusline+=%#warningmsg#
@@ -243,5 +246,3 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-
-" Rust section end
