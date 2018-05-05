@@ -170,11 +170,42 @@ nnoremap <silent><buffer> <Plug>(rust-def-tab)
         \ :tab split<CR>:call racer#GoToDefinition()<CR>
 au FileType rust nmap gs <Plug>(rust-def-tab)
 
-au FileType rust    nnoremap <Leader>g :LLsession new<CR>
+function! StartLLDBSession()
+    if !exists("g:session_created")
+        let g:session_created = 1
+        LLsession new
+        "Automates starting the LLDB session.
+        "The lldb.vim guy decided to call lldb#session#new() asynchronously from
+        "python, so the timing is a crapshoot here
+        let i = 0
+        while i < 100
+            let i = i + 1
+            call feedkeys("\<CR>")
+        endwhile
+        sleep 1m
+    endif
+    call LLDebug()
+endfunction
+
+function! LLDebug()
+    write
+    call lldb#remote#__notify("mode", "debug")
+    if !exists("g:debugged_before")
+        let g:debugged_before = 1
+        let i = 0
+        while i < 100
+            let i = i + 1
+            call feedkeys("\<CR>")
+        endwhile
+        "If it does not automate launching the target, make it sleep longer
+        sleep 1000m
+    endif
+endfunction
+
 au FileType rust    nmap <S-F9> <Plug>LLBreakSwitch
 au FileType rust    vmap <F2> <Plug>LLStdInSelected
 au FileType rust    nnoremap <F4> :LLstdin<CR>
-au FileType rust    nnoremap <F5> :w<CR>:LLmode debug<CR>
+au FileType rust    nnoremap <F5> :call StartLLDBSession()<CR>
 au FileType rust    nnoremap <S-F5> :LLmode code<CR>
 au FileType rust    nnoremap <F8> :LL continue<CR>
 au FileType rust    nnoremap <S-F8> :LL process interrupt<CR>
