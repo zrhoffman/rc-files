@@ -145,14 +145,10 @@ set completeopt+=noinsert
 "RLS autocomplete
 "set completefunc=LanguageClient#complete
 
-au FileType rust nmap gd <Plug>(rust-def)
-"au FileType rust nmap gs <Plug>(rust-def-split)
-au FileType rust nmap gx <Plug>(rust-def-vertical)
-"au FileType rust nmap <Leader>gd <Plug>(rust-doc)
-
 "autoformat. relies on rustfmt-nightly/rustfmt-preview
 au FileType rust let g:rustfmt_autosave = 1
 
+au FileType rust nmap gd <Plug>(rust-doc)
 au FileType rust nnoremap <silent><buffer> <Plug>(rust-def-tab)
         \ :tab split<CR>:call racer#GoToDefinition()<CR>
 au FileType rust nmap gs <Plug>(rust-def-tab)
