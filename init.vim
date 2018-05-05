@@ -198,7 +198,7 @@ function! LLDebug()
             let i = i + 1
             call feedkeys("\<CR>")
         endwhile
-        "If it does not automate launching the target, make it sleep longer
+        "If this does not automate launching the target, make it sleep longer
         sleep 1000m
     endif
 endfunction
