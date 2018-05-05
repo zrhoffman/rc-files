@@ -227,9 +227,9 @@ au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()
 runtime! plugin/syntastic/*.vim
 
 "From rust-lang/rust.vim
-au FileType rust autocmd BufEnter * runtime! syntax_checkers/rust/cargo.vim
+au FileType rust runtime! syntax_checkers/rust/cargo.vim
 "So I can build stuff
-au FileType rust autocmd BufEnter * runtime! compiler/cargo.vim
+au FileType rust runtime! compiler/cargo.vim
 
 "The RLS thing too
 "augroup filetype_rust
