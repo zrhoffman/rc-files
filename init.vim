@@ -68,6 +68,7 @@ Plug 'racer-rust/vim-racer'
 Plug 'roxma/nvim-cm-racer'
 "linting
 Plug 'vim-syntastic/syntastic'
+Plug 'rust-lang/rust.vim'
 "debugging
 Plug 'dbgx/lldb.nvim' "you need to run UpdateRemotePlugins after installing this for it to work
 
@@ -212,15 +213,6 @@ au FileType rust    nnoremap <S-F8> :LL process interrupt<CR>
 au FileType rust    nnoremap <F9> :LL print <C-R>=expand('<cword>')<CR>
 au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
 
-"So I can build stuff
-runtime! compiler/cargo.vim
-"compiler cargo
-
-if exists("g:loaded_syntastic_rust_cargo_checker")
-    finish
-endif
-let g:loaded_syntastic_rust_cargo_checker = 1
-
 " Syntastic syntax checkers:
 " Ansible       ansible-lint        pacman
 " CSS           CSSLint             AUR
@@ -232,53 +224,12 @@ let g:loaded_syntastic_rust_cargo_checker = 1
 " shell         ShellCheck          AUR
 " PHP           phpmd               composer
 " Vim           vimlint/vimlparser  vundle
-
-" https://github.com/rust-lang/rust.vim/pull/147
-" this makes syntastic work with cargo
-function! SyntaxCheckers_rust_cargo_GetLocList() dict
-    let makeprg = self.makeprgBuild({
-             \ 'args': 'build',
-             \ 'fname': '' })
-
-    " Old errorformat (before nightly 2016/08/10)
-    let errorformat  =
-        \ '%E%f:%l:%c: %\d%#:%\d%# %.%\{-}error:%.%\{-} %m,'   .
-        \ '%W%f:%l:%c: %\d%#:%\d%# %.%\{-}warning:%.%\{-} %m,' .
-        \ '%C%f:%l %m'
-
-    " New errorformat (after nightly 2016/08/10)
-    let errorformat  .=
-        \ ',' .
-        \ '%-G,' .
-        \ '%-Gerror: aborting %.%#,' .
-        \ '%-Gerror: Could not compile %.%#,' .
-        \ '%Eerror: %m,' .
-        \ '%Eerror[E%n]: %m,' .
-        \ '%-Gwarning: the option `Z` is unstable %.%#,' .
-        \ '%Wwarning: %m,' .
-        \ '%Inote: %m,' .
-        \ '%C %#--> %f:%l:%c'
-
-    return SyntasticMake({
-        \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat })
-endfunction
-
-let g:syntastic_rust_checkers = ['cargo']
-let g:syntastic_rust_cargo_args = "build"
-
-function! <SID>LoadCargo()
-    if exists('g:load_cargo_ran')
-        return
-    endif
-    let g:load_cargo_ran = 1
-    call g:SyntasticRegistry.CreateAndRegisterChecker({ 'filetype': 'rust', 'name': 'cargo'})
-endfunction
 runtime! plugin/syntastic/*.vim
 
-augroup CargoLoader
-    au FileType rust autocmd BufEnter * call <SID>LoadCargo()
-augroup end
+"From rust-lang/rust.vim
+au FileType rust autocmd BufEnter * runtime! syntax_checkers/rust/cargo.vim
+"So I can build stuff
+au FileType rust autocmd BufEnter * runtime! compiler/cargo.vim
 
 "The RLS thing too
 "augroup filetype_rust
