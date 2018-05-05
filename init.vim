@@ -152,9 +152,9 @@ au FileType rust nmap gx <Plug>(rust-def-vertical)
 "au FileType rust nmap <Leader>gd <Plug>(rust-doc)
 
 "autoformat. relies on rustfmt-nightly/rustfmt-preview
-let g:rustfmt_autosave = 1
+au FileType rust let g:rustfmt_autosave = 1
 
-nnoremap <silent><buffer> <Plug>(rust-def-tab)
+au FileType rust nnoremap <silent><buffer> <Plug>(rust-def-tab)
         \ :tab split<CR>:call racer#GoToDefinition()<CR>
 au FileType rust nmap gs <Plug>(rust-def-tab)
 
