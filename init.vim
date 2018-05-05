@@ -225,12 +225,20 @@ au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()
 " Vim           vimlint/vimlparser  vundle
 runtime! plugin/syntastic/*.vim
 
-"From rust-lang/rust.vim
-au FileType rust runtime! syntax_checkers/rust/cargo.vim
-"So I can build stuff
-au FileType rust runtime! compiler/cargo.vim
-au Filetype rust let g:syntastic_rust_checkers = ['cargo']
-au Filetype rust let g:syntastic_rust_cargo_args = "build"
+function! <SID>LoadCargo()
+    if exists("g:loaded_cargo")
+        return
+    endif
+    let g:loaded_cargo = 1
+    "In rust-lang/rust.vim
+    runtime! syntax_checkers/rust/cargo.vim
+    "So I can build stuff
+    runtime! compiler/cargo.vim
+    let g:syntastic_rust_checkers = ['cargo']
+    let g:syntastic_rust_cargo_args = "build"
+endfunction
+
+au FileType rust call <SID>LoadCargo()
 
 "The RLS thing too
 "augroup filetype_rust
