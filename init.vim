@@ -229,6 +229,8 @@ runtime! plugin/syntastic/*.vim
 au FileType rust runtime! syntax_checkers/rust/cargo.vim
 "So I can build stuff
 au FileType rust runtime! compiler/cargo.vim
+au Filetype rust let g:syntastic_rust_checkers = ['cargo']
+au Filetype rust let g:syntastic_rust_cargo_args = "build"
 
 "The RLS thing too
 "augroup filetype_rust
