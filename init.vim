@@ -125,8 +125,8 @@ imap <C-Space> <Plug>(asyncomplete_force_refresh)
 imap <Nul> <Plug>(asyncomplete_force_refresh)
 
 "Rust section begin
-let g:racer_cmd = expand("~")."/.cargo/bin/racer"
-let g:racer_experimental_completer = 1
+au FileType rust let g:racer_cmd = expand("~")."/.cargo/bin/racer"
+au FileType rust let g:racer_experimental_completer = 1
 
 "RLS stuff
 "au FileType rust let g:LanguageClient_serverCommands = {
