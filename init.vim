@@ -209,8 +209,6 @@ au FileType rust    nnoremap    <F9>    :LL print <C-R>=expand('<cword>')<CR>
 au FileType rust    vnoremap    <F9>    :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
 
 function! <SID>LoadCargo()
-    " prevent syntastic error in syntax_checkers/rust/cargo.vim
-    let g:cargo_chdir = 0
     "In rust-lang/rust.vim
     runtime! syntax_checkers/rust/cargo.vim
     "So I can build stuff
@@ -249,5 +247,5 @@ set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
