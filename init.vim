@@ -233,11 +233,6 @@ let g:loaded_syntastic_rust_cargo_checker = 1
 " PHP           phpmd               composer
 " Vim           vimlint/vimlparser  vundle
 
-let s:save_cpo = &cpo
-set cpo&vim
-let &cpo = s:save_cpo
-unlet s:save_cpo
-
 " https://github.com/rust-lang/rust.vim/pull/147
 " this makes syntastic work with cargo
 function! SyntaxCheckers_rust_cargo_GetLocList() dict
