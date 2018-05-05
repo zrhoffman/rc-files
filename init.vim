@@ -202,12 +202,23 @@ function! LLDebug()
     endif
 endfunction
 
+function! LLContinue()
+    if !exists("g:starting_breakpoint_cleared")
+        let g:starting_breakpoint_cleared = 1
+        normal gg
+        call search("^fn main(")
+        normal j
+        call lldb#remote#__notify("breakswitch", bufnr("%"), getcurpos()[1])
+    endif
+    LL continue
+endfunction
+
 au FileType rust    nmap <S-F9> <Plug>LLBreakSwitch
 au FileType rust    vmap <F2> <Plug>LLStdInSelected
 au FileType rust    nnoremap <F4> :LLstdin<CR>
 au FileType rust    nnoremap <F5> :call StartLLDBSession()<CR>
 au FileType rust    nnoremap <S-F5> :LLmode code<CR>
-au FileType rust    nnoremap <F8> :LL continue<CR>
+au FileType rust    nnoremap <F8> :call LLContinue()<CR>
 au FileType rust    nnoremap <S-F8> :LL process interrupt<CR>
 au FileType rust    nnoremap <F9> :LL print <C-R>=expand('<cword>')<CR>
 au FileType rust    vnoremap <F9> :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
