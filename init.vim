@@ -21,21 +21,8 @@ set number
 let &termencoding = &encoding
 set nobackup
 
-" http://stackoverflow.com/questions/1878974/redefine-tab-as-4-spaces
-" size of a hard tabstop
-set tabstop=4
-
-" size of an "indent"
-set shiftwidth=4
-
-" a combination of spaces and tabs are used to simulate tab stops at a width
-" other than the (hard)tabstop
-set softtabstop=4
-" make "tab" insert indents instead of tabs at the beginning of a line
-set smarttab
-
-" always uses spaces instead of tab characters
-set expandtab
+" https://stackoverflow.com/questions/1878974
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 
 " font size
 set guifont=Monospace\ 15
