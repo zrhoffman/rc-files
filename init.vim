@@ -50,8 +50,8 @@ Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer ru
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-Plug 'autozimu/LanguageClient-neovim'
-Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'}
+Plug 'autozimu/LanguageClient-neovim' "(neovim-only)
+Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'} "(neovim-only)
 
 "Extract vimballs from www.vim.org
 Plug 'vim-scripts/Vimball'
@@ -59,15 +59,15 @@ Plug 'vim-scripts/Vimball'
 "RLS, which is better than just racer
 "Plugin 'autozimu/LanguageClient-neovim'
 "autocompletion
-Plug 'valloric/YouCompleteMe' "you have to go into the YouCompleteMe plugin folder and run install.py
-Plug 'roxma/nvim-completion-manager'
+Plug 'valloric/YouCompleteMe' "you have to go into the YouCompleteMe plugin folder and run install.py --rust-completer
+Plug 'roxma/nvim-completion-manager' " (neovim-only, unmaintained as of 2018-04-18)
+Plug 'roxma/nvim-cm-racer' "(neovim-only) requires nvim-completion-manager
 Plug 'racer-rust/vim-racer'
-Plug 'roxma/nvim-cm-racer'
 "linting
 Plug 'vim-syntastic/syntastic'
 Plug 'rust-lang/rust.vim'
 "debugging
-Plug 'dbgx/lldb.nvim' "you need to run UpdateRemotePlugins after installing this for it to work
+Plug 'dbgx/lldb.nvim' "(neovim-only, unmaintained as of 2018-03-11) you need to run UpdateRemotePlugins after installing this for it to work
 
 "These are all one thing
 Plug 'Shougo/vimproc.vim'
