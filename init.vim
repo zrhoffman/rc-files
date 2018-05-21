@@ -40,6 +40,9 @@ hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
 
 runtime! ftplugin/man.vim
 call plug#begin()
+"Blade template syntax highlighting
+Plug 'jwalton512/vim-blade'
+
 " PHP Language server
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
