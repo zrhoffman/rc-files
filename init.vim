@@ -40,6 +40,12 @@ hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
 
 runtime! ftplugin/man.vim
 call plug#begin()
+"pdv dependencies
+Plug 'SirVer/ultisnips'
+Plug 'tobyS/vmustache'
+"PHP Documentor for Vim
+Plug 'tobyS/pdv'
+
 "Blade template syntax highlighting
 Plug 'jwalton512/vim-blade'
 
@@ -253,3 +259,7 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
+
+
+let g:pdv_template_dir = expand('~')."/.config/nvim/plugged/pdv/templates_snip"
+nnoremap <buffer> <C-p> :call pdv#DocumentWithSnip()<CR>
