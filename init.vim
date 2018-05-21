@@ -39,7 +39,6 @@ colorscheme peachpuff
 hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
 
 runtime! ftplugin/man.vim
-set rtp+=~/.vim/bundle/Vundle.vim
 call plug#begin()
 " PHP Language server
 Plug 'prabirshrestha/async.vim'
