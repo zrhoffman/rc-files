@@ -2,6 +2,9 @@ set clipboard=unnamed,unnamedplus
 set noswapfile
 set nocompatible
 
+"wrap lines at 80 characters
+set tw=80
+
 "fast escape key (though tmux.conf needs to be changed too)
 set timeoutlen=1000 ttimeoutlen=0
 
