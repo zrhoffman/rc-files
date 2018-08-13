@@ -71,8 +71,8 @@ Plug 'vim-scripts/Vimball'
 "Plugin 'autozimu/LanguageClient-neovim'
 "autocompletion
 Plug 'valloric/YouCompleteMe' "you have to go into the YouCompleteMe plugin folder and run install.py --rust-completer
-Plug 'roxma/nvim-completion-manager' " (neovim-only, unmaintained as of 2018-04-18)
-Plug 'roxma/nvim-cm-racer' "(neovim-only) requires nvim-completion-manager
+Plug 'ncm2/ncm2' " (neovim-only, successor to roxma/nvim-completion-manager)
+Plug 'roxma/nvim-cm-racer' "(neovim-only) requires ncm2/ncm2
 Plug 'racer-rust/vim-racer'
 "linting
 Plug 'vim-syntastic/syntastic'
