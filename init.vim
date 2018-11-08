@@ -125,28 +125,9 @@ function GetPLSPath()
     return return_path
 endfunction
 
-au User lsp_setup call lsp#register_server({
-    \ 'name': 'php-language-server',
-    \ 'cmd': {server_info->['php', expand('~/.config/nvim/plugged/php-language-server/bin/php-language-server.php')]},
-    \ 'root_uri':{server_info->lsp#utils#path_to_uri(GetPLSPath()[:-2])},
-    \ 'whitelist': ['php'],
-    \ })
-
-nnoremap <c-]>  :tab split<CR>:LspDefinition<CR>
-nnoremap K :LspHover<CR>
-
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('~/vim-lsp.log')
-
-" for asyncomplete.vim log
-let g:asyncomplete_auto_popup=1
-let g:asyncomplete_remove_duplicates=1
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-autocmd FileType php setlocal omnifunc=lsp#complete
-let g:asyncomplete_log_file = expand('~/asyncomplete.log')
-
-imap <C-Space> <Plug>(asyncomplete_force_refresh)
-imap <Nul> <Plug>(asyncomplete_force_refresh)
+"autocmd FileType php setlocal omnifunc=LanguageClient#complete
+"au FileType php setlocal completefunc=LanguageClient#complete
 "PHP section end
 
 "Rust section begin
@@ -154,12 +135,25 @@ au FileType rust let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 au FileType rust let g:racer_experimental_completer = 1
 
 "RLS stuff
-"au FileType rust let g:LanguageClient_serverCommands = {
-"    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-"    \ }
-"au FileType rust nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-"au FileType rust nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
-"au FileType rust nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+au FileType rust let g:LanguageClient_serverCommands = {
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+    \ }
+
+au FileType php let g:LanguageClient_serverCommands = {
+    \ 'php': ['php', '/home/z329h467/.config/nvim/plugged/php-language-server/bin/php-language-server.php'],
+    \ }
+au FileType php let g:LanguageClient_autoStart = 1
+
+au FileType php nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+"Or map each action separately
+
+au FileType rust nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+au FileType rust nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+au FileType rust nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+
+au FileType php nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+au FileType php nnoremap <silent> gd :tab split<CR>:call LanguageClient_textDocument_definition()<CR>
+au FileType php nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 
 " Also for RLS
 " Always draw sign column. Prevent buffer moving when adding/deleting sign.
@@ -169,7 +163,7 @@ let g:mapleader = "\\"
 let g:echodoc_enable_at_startup = 1
 set completeopt+=noinsert
 "RLS autocomplete
-"set completefunc=LanguageClient#complete
+au FileType rust set completefunc=LanguageClient#complete
 
 "autoformat. relies on rustfmt-nightly/rustfmt-preview
 au FileType rust let g:rustfmt_autosave = 1
@@ -224,15 +218,15 @@ function! LLClearStartingBreakpoint()
     LL continue
 endfunction
 
-au FileType rust    nmap        <S-F9>  <Plug>LLBreakSwitch
+au FileType rust    nmap        <F8>  <Plug>LLBreakSwitch
 au FileType rust    vmap        <F2>    <Plug>LLStdInSelected
 au FileType rust    nnoremap    <F4>    :LLstdin<CR>
 au FileType rust    nnoremap    <F5>    :call StartLLDBSession()<CR>
 au FileType rust    nnoremap    <S-F5>  :LLmode code<CR>
-au FileType rust    nnoremap    <F8>    :LL continue<CR>
-au FileType rust    nnoremap    <S-F8>  :LL process interrupt<CR>
-au FileType rust    nnoremap    <F9>    :LL print <C-R>=expand('<cword>')<CR>
-au FileType rust    vnoremap    <F9>    :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
+au FileType rust    nnoremap    <F9>    :LL continue<CR>
+au FileType rust    nnoremap    <S-F9>  :LL process interrupt<CR>
+au FileType rust    nnoremap    <S-F8>    :LL print <C-R>=expand('<cword>')<CR>
+au FileType rust    vnoremap    <S-F8>    :<C-U>LL print <C-R>=lldb#util#get_selection()<CR><CR>
 
 function! <SID>LoadCargo()
     "In rust-lang/rust.vim
