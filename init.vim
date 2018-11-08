@@ -57,10 +57,13 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'} "If this doesn't work for some reason, you need to go into the php-language-server plugin folder and do a composer install
 "
 "Autocomplete
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+"LanguageClient-neovim' is neovim-only
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+" (Optional) Multi-entry selection UI.
 
-Plug 'autozimu/LanguageClient-neovim' "(neovim-only)
 Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'} "(neovim-only)
 
 "Extract vimballs from www.vim.org
