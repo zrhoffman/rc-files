@@ -37,13 +37,6 @@ set guifont=Monospace\ 15
 " Clipboard stays after exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
 
-"neovim stuff
-"because neovim has terrible colors
-"It turns out peachpuff is the vim default one. Great.
-colorscheme peachpuff
-"because they made search yellow by default
-hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
-
 runtime! ftplugin/man.vim
 call plug#begin()
 "pdv dependencies
@@ -96,7 +89,18 @@ Plug 'henrik/git-grep-vim'
 "Vimscript linting
 Plug 'ynkdir/vim-vimlparser'
 Plug 'syngan/vim-vimlint'
+
+"Theme
+Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
+
+"neovim stuff
+"because neovim has terrible colors
+set t_Co=256   " This is may or may not needed.
+set background=light
+colorscheme PaperColor
+"because they made search yellow by default
+"hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
 
 "Everything after this point is plugin and language/filetype-specific
 "configuration
