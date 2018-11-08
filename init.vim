@@ -39,6 +39,9 @@ autocmd VimLeave * call system("xsel -ib", getreg('+'))
 
 runtime! ftplugin/man.vim
 call plug#begin()
+"C++
+Plug 'huawenyu/neogdb.vim'
+
 "pdv dependencies
 Plug 'SirVer/ultisnips'
 Plug 'tobyS/vmustache'
@@ -273,3 +276,9 @@ let g:syntastic_check_on_wq = 0
 
 let g:pdv_template_dir = expand('~')."/.config/nvim/plugged/pdv/templates_snip"
 nnoremap <buffer> <C-p> :call pdv#DocumentWithSnip()<CR>
+
+"C++
+let g:neobugger_leader = ';'
+function! GdbCommmand(command)
+    call neobugger#Handle('current', 'Send', a:command)
+endfunction
