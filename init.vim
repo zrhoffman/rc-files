@@ -2,6 +2,9 @@ set clipboard=unnamed,unnamedplus
 set noswapfile
 set nocompatible
 
+"mozilla standard
+"set ts=8 sts=2 et sw=2 tw=80
+
 "wrap lines at 80 characters
 set tw=80
 
