@@ -56,10 +56,10 @@ Plug 'jwalton512/vim-blade'
 Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'} "If this doesn't work for some reason, you need to go into the php-language-server plugin folder and do a composer install
 "
 "LanguageClient-neovim' is neovim-only
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
+Plug 'autozimu/LanguageClient-neovim' ", {
+"    \ 'branch': 'next',
+"    \ 'do': 'bash install.sh',
+"    \ }
 " (Optional) Multi-entry selection UI.
 Plug 'junegunn/fzf'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
