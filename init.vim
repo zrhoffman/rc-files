@@ -52,17 +52,17 @@ Plug 'tobyS/pdv'
 Plug 'jwalton512/vim-blade'
 
 " PHP Language server
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
+"Plug 'prabirshrestha/async.vim'
 Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer run-script parse-stubs'} "If this doesn't work for some reason, you need to go into the php-language-server plugin folder and do a composer install
 "
-"Autocomplete
 "LanguageClient-neovim' is neovim-only
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
     \ 'do': 'bash install.sh',
     \ }
 " (Optional) Multi-entry selection UI.
+Plug 'junegunn/fzf'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'} "(neovim-only)
 
