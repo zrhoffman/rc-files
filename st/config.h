@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=24:antialias=true:autohint=true";
+static char *font = "Liberation Mono:pixelsize=18:antialias=true:autohint=true";
 static int borderpx = 2;
 
 /*
@@ -102,7 +102,7 @@ static const char *colorname[] = {
 	"#5c5cff",
 	"magenta",
 	"cyan",
-	"white",
+	"#f7faff",
 
 	[255] = 0,
 
@@ -117,7 +117,7 @@ static const char *colorname[] = {
  * foreground, background, cursor, reverse cursor
  */
 unsigned int defaultfg = 0;
-unsigned int defaultbg = 7;
+unsigned int defaultbg = 15;
 static unsigned int defaultcs = 256;
 static unsigned int defaultrcs = 257;
 
