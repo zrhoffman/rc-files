@@ -8,6 +8,9 @@ set nocompatible
 "wrap lines at 80 characters
 set tw=80
 
+" https://stackoverflow.com/questions/1878974
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+
 "fast escape key (though tmux.conf needs to be changed too)
 set timeoutlen=1000 ttimeoutlen=0
 
@@ -27,9 +30,6 @@ set number
 " Added 12/10-2014 and it works in cygwinvim.bat now!
 let &termencoding = &encoding
 set nobackup
-
-" https://stackoverflow.com/questions/1878974
-set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 
 " font size
 set guifont=Monospace\ 15
