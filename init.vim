@@ -164,6 +164,7 @@ let g:mapleader = "\\"
 let g:echodoc_enable_at_startup = 1
 set completeopt+=noinsert
 "RLS autocomplete
+au FileType rust let g:LanguageClient_autoStart = 1
 au FileType rust set completefunc=LanguageClient#complete
 
 "autoformat. relies on rustfmt-nightly/rustfmt-preview
