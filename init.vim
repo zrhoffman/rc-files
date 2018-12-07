@@ -65,8 +65,6 @@ Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
 Plug 'junegunn/fzf'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
-Plug 'roxma/LanguageServer-php-neovim', {'do': 'composer install && composer run-script parse-stubs'} "(neovim-only)
-
 "Extract vimballs from www.vim.org
 Plug 'vim-scripts/Vimball'
 
