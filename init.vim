@@ -1,12 +1,12 @@
 set clipboard=unnamed,unnamedplus
-set noswapfile
+set noswapfile nobackup
 set nocompatible
 
 "mozilla standard
 "set ts=8 sts=2 et sw=2 tw=80
 
 "wrap lines at 80 characters
-set tw=80
+set textwidth=80
 
 " https://stackoverflow.com/questions/1878974
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
@@ -21,15 +21,12 @@ set statusline+=col:\ %c,
 set statusline+=%F
 set laststatus=2
 
+" cygwin compatibility
 let &termencoding = &encoding
 set encoding=utf-8 nobomb
 syntax on
 filetype plugin indent on
 set number
-
-" Added 12/10-2014 and it works in cygwinvim.bat now!
-let &termencoding = &encoding
-set nobackup
 
 " font size
 set guifont=Monospace\ 15
