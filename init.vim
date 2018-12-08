@@ -102,8 +102,6 @@ call plug#end()
 set t_Co=256   " This is may or may not needed.
 set background=light
 colorscheme PaperColor
-"because they made search yellow by default
-"hi Search term=standout ctermfg=4 ctermbg=7 guifg=DarkBlue guibg=LightGrey
 
 "Everything after this point is plugin and language/filetype-specific
 "configuration
