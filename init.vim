@@ -1,5 +1,5 @@
 set clipboard=unnamed,unnamedplus
-set noswapfile
+set noswapfile nobackup
 set nocompatible
 
 "mozilla standard
@@ -29,7 +29,6 @@ set number
 
 " Added 12/10-2014 and it works in cygwinvim.bat now!
 let &termencoding = &encoding
-set nobackup
 
 " font size
 set guifont=Monospace\ 15
