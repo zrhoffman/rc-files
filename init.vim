@@ -29,9 +29,6 @@ set encoding=utf-8 nobomb
 set nocompatible
 filetype plugin indent on
 
-" font size
-set guifont=Monospace\ 15
-
 " Clipboard stays after exit
 autocmd VimLeave * call system("xsel -ib", getreg('+'))
 
