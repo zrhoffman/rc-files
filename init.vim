@@ -85,10 +85,6 @@ Plug 'cespare/vim-toml'
 Plug 'Shougo/vimproc.vim'
 Plug 'Shougo/unite.vim'
 
-"Project-wide find/replace
-Plug 'henrik/vim-qargs'
-Plug 'henrik/git-grep-vim'
-
 "Vimscript linting
 Plug 'ynkdir/vim-vimlparser'
 Plug 'syngan/vim-vimlint'
