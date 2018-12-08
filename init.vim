@@ -125,6 +125,13 @@ endfunction
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 "autocmd FileType php setlocal omnifunc=LanguageClient#complete
 "au FileType php setlocal completefunc=LanguageClient#complete
+
+au FileType php let g:LanguageClient_serverCommands = {
+    \ 'php': ['php', '/home/z329h467/.config/nvim/plugged/php-language-server/bin/php-language-server.php'],
+    \ }
+au FileType php let g:LanguageClient_autoStart = 1
+au FileType php nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+
 "PHP section end
 
 "Rust section begin
@@ -135,14 +142,6 @@ au FileType rust let g:racer_experimental_completer = 1
 au FileType rust let g:LanguageClient_serverCommands = {
     \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
     \ }
-
-au FileType php let g:LanguageClient_serverCommands = {
-    \ 'php': ['php', '/home/z329h467/.config/nvim/plugged/php-language-server/bin/php-language-server.php'],
-    \ }
-au FileType php let g:LanguageClient_autoStart = 1
-
-au FileType php nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-"Or map each action separately
 
 au FileType rust nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
 au FileType rust nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
