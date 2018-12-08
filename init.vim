@@ -1,6 +1,7 @@
 set clipboard=unnamed,unnamedplus
 set noswapfile nobackup
-set nocompatible
+set number
+syntax on
 
 "mozilla standard
 "set ts=8 sts=2 et sw=2 tw=80
@@ -24,9 +25,9 @@ set laststatus=2
 " cygwin compatibility
 let &termencoding = &encoding
 set encoding=utf-8 nobomb
-syntax on
+" not necessary in neovim
+set nocompatible
 filetype plugin indent on
-set number
 
 " font size
 set guifont=Monospace\ 15
