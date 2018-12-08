@@ -6,7 +6,7 @@ set nocompatible
 "set ts=8 sts=2 et sw=2 tw=80
 
 "wrap lines at 80 characters
-set tw=80
+set textwidth=80
 
 " https://stackoverflow.com/questions/1878974
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
