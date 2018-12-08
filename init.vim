@@ -3,7 +3,9 @@ set noswapfile nobackup
 set number
 syntax on
 
-"mozilla standard
+" mozilla standard
+" no longer official, as mozilla uses
+" https://google.github.io/styleguide/cppguide.html now
 "set ts=8 sts=2 et sw=2 tw=80
 
 "wrap lines at 80 characters
