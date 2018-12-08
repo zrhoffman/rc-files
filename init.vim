@@ -65,14 +65,17 @@ Plug 'vim-scripts/Vimball'
 
 "RLS, which is better than just racer
 "Plugin 'autozimu/LanguageClient-neovim'
+"
 "autocompletion
 "Plug 'valloric/YouCompleteMe' "you have to go into the YouCompleteMe plugin folder and run python3 install.py --rust-completer --go-completer --clang-completer
 Plug 'ncm2/ncm2' " (neovim-only, successor to roxma/nvim-completion-manager)
 Plug 'roxma/nvim-cm-racer' "(neovim-only) requires ncm2/ncm2
 Plug 'racer-rust/vim-racer'
+
 "linting
 Plug 'vim-syntastic/syntastic'
 Plug 'rust-lang/rust.vim'
+
 "debugging
 Plug 'dbgx/lldb.nvim' "(neovim-only, unmaintained as of 2018-03-11) you need to run UpdateRemotePlugins after installing this for it to work
 "TOML syntax hightlighting
