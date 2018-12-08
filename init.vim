@@ -21,14 +21,12 @@ set statusline+=col:\ %c,
 set statusline+=%F
 set laststatus=2
 
+" cygwin compatibility
 let &termencoding = &encoding
 set encoding=utf-8 nobomb
 syntax on
 filetype plugin indent on
 set number
-
-" Added 12/10-2014 and it works in cygwinvim.bat now!
-let &termencoding = &encoding
 
 " font size
 set guifont=Monospace\ 15
