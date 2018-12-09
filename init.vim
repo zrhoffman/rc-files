@@ -124,7 +124,7 @@ autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 "au FileType php setlocal completefunc=LanguageClient#complete
 
 au FileType php let g:LanguageClient_serverCommands = {
-    \ 'php': ['php', '/home/z329h467/.config/nvim/plugged/php-language-server/bin/php-language-server.php'],
+    \ 'php': ['php', expand("~") . '/.config/nvim/plugged/php-language-server/bin/php-language-server.php'],
     \ }
 au FileType php let g:LanguageClient_autoStart = 1
 au FileType php nnoremap <F5> :call LanguageClient_contextMenu()<CR>
@@ -132,7 +132,7 @@ au FileType php nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 "PHP section end
 
 "Rust section begin
-au FileType rust let g:racer_cmd = expand("~")."/.cargo/bin/racer"
+au FileType rust let g:racer_cmd = expand("~") . "/.cargo/bin/racer"
 au FileType rust let g:racer_experimental_completer = 1
 
 "RLS stuff
