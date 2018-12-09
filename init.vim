@@ -54,11 +54,6 @@ Plug 'felixfbecker/php-language-server', {'do': 'composer install && composer ru
 "
 "LanguageClient-neovim' is neovim-only
 Plug 'autozimu/LanguageClient-neovim', { 'do': ':UpdateRemotePlugins' }
-"Plug 'autozimu/LanguageClient-neovim' ", {
-"    \ 'branch': 'next',
-"    \ 'do': 'bash install.sh',
-"    \ }
-" (Optional) Multi-entry selection UI.
 Plug 'junegunn/fzf'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
