@@ -141,7 +141,7 @@ au FileType rust let g:LanguageClient_serverCommands = {
     \ }
 
 au FileType rust nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-au FileType rust nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+au FileType rust nmap gd :tab split<CR> :call LanguageClient_textDocument_definition()<CR>
 au FileType rust nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 
 au FileType php nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
@@ -162,7 +162,6 @@ au FileType rust set completefunc=LanguageClient#complete
 "autoformat. relies on rustfmt-nightly/rustfmt-preview
 au FileType rust let g:rustfmt_autosave = 1
 
-au FileType rust nmap gd <Plug>(rust-doc)
 au FileType rust nnoremap <silent><buffer> <Plug>(rust-def-tab)
         \ :tab split<CR>:call racer#GoToDefinition()<CR>
 au FileType rust nmap gs <Plug>(rust-def-tab)
