@@ -75,6 +75,7 @@ Plug 'rust-lang/rust.vim'
 
 "debugging
 Plug 'dbgx/lldb.nvim' "(neovim-only, unmaintained as of 2018-03-11) you need to run UpdateRemotePlugins after installing this for it to work
+Plug 'WolfgangMehner/bash-support'
 
 "TOML syntax hightlighting
 Plug 'cespare/vim-toml'
