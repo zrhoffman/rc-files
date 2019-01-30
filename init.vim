@@ -130,6 +130,11 @@ autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 "au FileType php setlocal completefunc=LanguageClient#complete
 "PHP section end
 
+"JavaScript section begin
+"let g:syntastic_javascript_checkers = ['eslint']
+"let g:syntastic_javascript_eslint_exec = 'eslint_d'
+"Javascript section end
+
 "Rust section begin
 au FileType rust let g:racer_cmd = expand("~")."/.cargo/bin/racer"
 au FileType rust let g:racer_experimental_completer = 1
