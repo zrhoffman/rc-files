@@ -39,6 +39,9 @@ call plug#begin()
 "C++
 Plug 'huawenyu/neogdb.vim'
 
+"Bash
+Plug 'mads-hartmann/bash-language-server'
+
 "pdv dependencies
 Plug 'SirVer/ultisnips'
 Plug 'tobyS/vmustache'
