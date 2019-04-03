@@ -12,7 +12,7 @@ syntax on
 set textwidth=80
 
 " https://stackoverflow.com/questions/1878974
-set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 
 "fast escape key (though tmux.conf needs to be changed too)
 set timeoutlen=1000 ttimeoutlen=0
