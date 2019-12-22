@@ -12,6 +12,5 @@ cd st;
 git pull;
 cp ../config.h .;
 rm -f *.*z;
-makepkg;
 makepkg --install --noconfirm;
 );
