@@ -11,7 +11,6 @@ set -o errexit -o nounset -o pipefail;
 cd st;
 git pull;
 cp ../config.h .;
-sed -i '16s/.*/'"'$sha256')"'/' PKGBUILD;
 rm -f *.*z;
 makepkg;
 makepkg --install --noconfirm;
