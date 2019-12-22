@@ -11,6 +11,6 @@ set -o errexit -o nounset -o pipefail;
 cd st;
 git pull;
 cp ../config.h .;
-rm -f *.*z;
+rm st-*.pkg.tar.xz;
 makepkg --install --noconfirm;
 );
