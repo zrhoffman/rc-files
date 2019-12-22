@@ -6,11 +6,12 @@ then
 fi;
 
 sha256=$(openssl sha256 config.h | awk '{print $2}');
-pushd st || exit;
+(
+cd st;
 git pull;
 cp ../config.h .;
 sed -i '16s/.*/'"'$sha256')"'/' PKGBUILD;
 rm -f *.*z;
 makepkg;
 makepkg --install --noconfirm;
-popd || exit;
+);
