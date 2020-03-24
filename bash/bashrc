@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+function load_rc_files()
+{
+  local rc_files=(
+    atc
+  docker
+  );
+
+  local path rc_file;
+  for rc_file in "${rc_files[@]}"; do
+      path=~/".bashrc.${rc_file}";
+      if [[ -e "$path" ]]; then
+        source ~/".bashrc.${rc_file}";
+      fi;
+  done;
+}
+load_rc_files;
+
+alias ls='ls --color=auto'
+alias vim=nvim;
+
+PS1='[\u@\h \W]\$ '
+
+if [[ "$TERM" == 'linux' ]]; then
+    startx;
+    tmux_exec='';
+else
+    tmux_exec='exec';
+fi;
+
+if [[ ! -v TMUX ]]; then
+    $tmux_exec tmux;
+fi;

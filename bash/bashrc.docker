@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -o allexport;
+COMPOSE_DOCKER_CLI_BUILD=1;
+DOCKER_BUILDKIT=1;
+set +o allexport;
+
+function docker_stop_everything()
+{
+    echo 'Stopping docker processes...';
+    docker ps --all --quiet | xargs docker stop;
+
+    echo 'Removing docker processes...';
+    #This ps list is not necessarily the same as the last one
+    docker ps --all --quiet | xargs docker rm;
+}
+
+alias docker_remove_networks='docker network ls --quiet | xargs docker network rm';
+alias docker_remove_volumes='docker volume ls --quiet | xargs docker volume rm';
+alias docker_centos='docker run --rm -it centos:7 bash -l';
+
+function docker_up ()
+{
+    docker-compose up --force-recreate --detach;
+    docker-compose logs --follow;
+    docker-compose down;
+}
+
+docker_run()
+{
+    local image="$1";
+    shift;
+    local commands=("$@");
+    docker run --rm -it "$image" "${commands[@]}";
+}
+
+docker_nuke_images()
+{
+    docker_stop_everything;
+    docker image prune --all --force
+    docker builder prune --all --force
+
+}
+
+docker_prune()
+{
+    docker image prune --force;
+    docker builder prune --force;
+}

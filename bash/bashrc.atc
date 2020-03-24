@@ -1,0 +1,664 @@
+#!/usr/bin/env bash
+
+function keys_to_fields()
+{
+  cat | jq 'keys' | tail -n+2 | head -n-1 | cut -d'"' -f2 | sed 's/.*/:\0:/g'
+}
+
+function response_to_fields()
+{
+  local response_body;
+  response_body="$(cat)";
+  if [[ "$(echo "$response_body" | jq '.response')" == null ]]; then
+    return;
+  fi;
+  echo "$response_body" | jq '.response | keys' | tail -n+2 | head -n-1 | cut -d'"' -f2 | sed 's/.*/:\0:/g'
+}
+function prettify_output()
+
+{
+  local response request_headers request_body= response_headers body;
+  response="$1";
+  shift;
+  if [[ $# -ne 0 ]]; then
+    request_body="$1";
+    shift;
+  fi;
+  request_headers="$(echo "$response" | awk '/^$/{occurrence += 1;next}{if(occurrence < 1){print}}')";
+  response_headers="$(echo "$response" | awk '/^$/{occurrence += 1;next}{if(occurrence == 1){print}}')";
+  body="$(echo "$response" | awk '/^$/{occurrence += 1;next}{if(occurrence > 1){print}}')";
+  <<CONSOLE_OUTPUT cat -s;
+
+$(sanitize_cookie "$request_headers")
+$([[ -n "$request_body" ]] && printf '\n%s\n' "$(echo "$request_body" | jq --color-output)"; )
+
+$(sanitize_cookie "$response_headers")
+
+$(echo "$body" | jq --color-output)
+CONSOLE_OUTPUT
+
+  <<CLIPBOARD_OUTPUT cat -s | xsel -ibps;
+Request Structure
+-----------------
+$([[ -n "$request_body" ]] && printf '%s\n' "$(echo "$request_body" | keys_to_fields)"; )
+
+.. code-block:: http
+$(echo $'\t'):caption: Request Example
+
+$(sanitize_cookie "$request_headers" | sed 's/^/'$'\t''/g')
+$(printf '\n%s\n' "$(echo "$request_body" | jq --tab | sed 's/^/'$'\t''/g')"; )
+
+Response Structure
+------------------
+$([[ -n "$body" ]] && printf '%s\n' "$(echo "$body" | response_to_fields)"; )
+
+.. code-block:: http
+$(echo $'\t'):caption: Response Example
+
+$(sanitize_cookie "$response_headers" | sed 's/^/'$'\t''/g')
+
+$(echo "$body" | jq --tab | sed 's/^/'$'\t''/g')
+CLIPBOARD_OUTPUT
+}
+
+function sanitize_cookie()
+{
+  local cookie="$1";
+  echo "$cookie" | sed 's/\(mojolicious=\)\([a-zA-Z0-9-]\)\{40,\}\($\|;\)/\1...\3/g';
+}
+
+function atc()
+{
+    cd "$GOPATH/src/github.com/apache/trafficcontrol";
+}
+
+function dist()
+{
+    atc;
+    cd dist;
+}
+
+function tc()
+{
+    atc;
+    cd lib/go-tc;
+}
+
+alias atc_db='docker run --rm --name db --env=POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:alpine';
+
+function cb()
+{
+    atc;
+    cd infrastructure/cdn-in-a-box;
+}
+
+function tm()
+{
+    atc;
+    cd traffic_monitor;
+}
+
+function to()
+{
+    atc;
+    cd traffic_ops;
+}
+
+function toclient()
+{
+  atc;
+  cd traffic_control/clients/python/trafficops;
+}
+
+function tog()
+{
+    to;
+    cd traffic_ops_golang;
+}
+
+function tp()
+{
+    atc;
+    cd traffic_portal;
+}
+
+function atr()
+{
+    atc;
+    cd traffic_router;
+}
+
+function routes()
+{
+  tog;
+  cd routing;
+  vim routes.go;
+}
+
+function docs()
+{
+  atc;
+  cd docs/source;
+}
+
+function api()
+{
+  atc;
+  cd docs/source/api/v2;
+}
+
+function cbdc()
+{
+  (
+  cb;
+  local compose_files=(
+    docker-compose.yml
+    docker-compose.expose-ports.yml
+    optional/docker-compose.static-subnet.yml
+    optional/docker-compose.socksproxy.yml
+    optional/docker-compose.socksproxy.expose-ports.yml
+    #optional/docker-compose.grafana.yml
+    #optional/docker-compose.grafana.expose-ports.yml
+  );
+  local debugging_compose=optional/docker-compose.debugging.yml;
+  if [[ -f "$debugging_compose" ]]; then
+    compose_files+=("$debugging_compose");
+  fi;
+  compose_files_length=${#compose_files[@]}
+  docker_compose_command=(docker-compose);
+  for (( index = 0; index < compose_files_length; index++ )); do
+    docker_compose_command+=(-f "${compose_files[$index]}");
+  done;
+  #local docker_compose_command=(docker-compose -f docker-compose.yml -f optional/docker-compose.vnc.yml -f optional/docker-compose.vnc.expose-ports.yml);
+  "${docker_compose_command[@]}" "$@";
+  )
+}
+
+function cto_login()
+{
+  cto_post user/login '{"u":"admin","p":"twelve"}';
+}
+
+function cto_put()
+{
+  cto_post "$@" '' -XPUT;
+}
+
+function cto_delete()
+{
+  cto_post "$@" '' -XDELETE;
+}
+
+function cto_get()
+{
+  cto "$@";
+}
+
+function cto_head()
+{
+  cto "$@" --head;
+}
+
+function cto_options()
+{
+  cto "$@" -XOPTIONS;
+}
+
+function cto_patch()
+{
+  cto "$@" '' -XPATCH;
+}
+
+function cto()
+{
+  (
+  set -o errexit -o nounset -o pipefail;
+  route="$1";
+  shift;
+
+  cb;
+
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/1.1/';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+    ${curl_command}'${route}' $*;
+DOCKER_COMMANDS
+  )";
+  prettify_output "$response";
+  );
+}
+
+function cto_post()
+{
+  (
+  set -o errexit -o nounset -o pipefail;
+  route="$1";
+  shift;
+
+  if [[ $# -gt 0 ]]; then
+    data_option='--data';
+  else
+    data_option='';
+  fi;
+
+  data="$1";
+  shift;
+
+  cb;
+
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/2.0/';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+    ${curl_command}'${route}' ${data_option} "\$(
+      <<'POST_DATA' cat;
+$data
+POST_DATA
+     )" $*;
+DOCKER_COMMANDS
+  )";
+  #prettify_output "$response" "$data";
+  echo "$response";
+  );
+}
+
+function cto_perl_login()
+{
+  cto_perl_post user/login '{"u":"admin","p":"twelve"}';
+}
+
+function cto_perl_delete()
+{
+  cto_perl_post "$@" '' -XDELETE;
+}
+
+function cto_perl_get()
+{
+  cto_perl "$@";
+}
+
+function cto_perl_head()
+{
+  cto_perl "$@" --head;
+}
+
+function cto_perl_options()
+{
+  cto_perl "$@" -XOPTIONS;
+}
+
+function cto_perl_patch()
+{
+  cto_perl "$@" '' -XPATCH;
+}
+
+function cto_perl()
+{
+  (
+  set -o errexit -o nounset -o pipefail;
+  route="$1";
+  shift;
+
+  cb;
+
+  #curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar $TO_PERL_SCHEME://$TO_PERL_HOST/api/2.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/2.0/';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+    ${curl_command}'${route}' $*;
+DOCKER_COMMANDS
+  )";
+  prettify_output "$response";
+  );
+}
+
+function cto_perl_post()
+{
+  (
+  set -o errexit -o nounset -o pipefail;
+  route="$1";
+  shift;
+
+  if [[ $# -gt 0 ]]; then
+    data_option='--data';
+  else
+    data_option='';
+  fi;
+
+  data="$1";
+  shift;
+
+  cb;
+
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/2.0/';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+    ${curl_command}'${route}' ${data_option} "\$(
+      <<'POST_DATA' cat;
+$data
+POST_DATA
+     )" $*;
+DOCKER_COMMANDS
+  )";
+  prettify_output "$response" "$data";
+  );
+}
+
+
+#Python client for traffic ops
+function pto()
+{
+  (
+  set -o errexit -o pipefail;
+  local pto_command route request_body;
+  cb;
+  pto_command="$1";
+  shift;
+  route="$1";
+  shift;
+  if [[ $# -ne 0 ]]; then
+    request_body="$1";
+    shift;
+  fi;
+
+  toclient_command="$pto_command"' --api-version=2.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=https://$TO_HOST --request-headers --response-headers';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+    ${toclient_command} '${route}' "\$(
+      <<'POST_DATA' cat;
+$request_body
+POST_DATA
+     )" ${*:2};
+DOCKER_COMMANDS
+  )";
+  prettify_output "$response" "$request_body";
+  )
+}
+
+function todelete()
+{
+  pto todelete "$@";
+}
+
+function toget()
+{
+  pto toget "$@";
+}
+
+function tohead()
+{
+  pto tohead "$@";
+}
+
+function tooptions()
+{
+  pto tooptions "$@";
+}
+
+function topatch()
+{
+  pto topatch "$@";
+}
+
+function topost()
+{
+  pto topost "$@";
+}
+
+function toput()
+{
+  pto toput "$@";
+}
+
+#Python client for traffic ops (to perl)
+function pto_perl()
+{
+  (
+  set -o errexit -o pipefail;
+  cb;
+  pto_command="$1";
+  shift;
+  route="$1";
+  shift;
+  maybe_request_body="$1";
+  shift;
+
+  toclient_command="$pto_command"' --api-version=2.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+    ${toclient_command} '${route}' "\$(
+      <<'POST_DATA' cat;
+$1
+POST_DATA
+     )" ${*:2};
+DOCKER_COMMANDS
+  )";
+  prettify_output "$response" "$maybe_request_body";
+  )
+}
+
+#Python client for traffic ops perl
+#function pto_perl()
+#{
+#  (
+#  set -o errexit -o nounset -o pipefail;
+#  cb;
+#  pto_command="$1";
+#  shift;
+#  docker-compose exec mid sh -c "$pto_command"' --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST '"$*";
+#  )
+#}
+
+function to_perl_delete()
+{
+  pto_perl todelete "$@";
+}
+
+function to_perl_get()
+{
+  pto_perl toget "$@";
+}
+
+function to_perl_head()
+{
+  pto_perl tohead "$@";
+}
+
+function to_perl_options()
+{
+  pto_perl tooptions "$@";
+}
+
+function to_perl_patch()
+{
+  pto_perl topatch "$@";
+}
+
+function to_perl_post()
+{
+  pto_perl topost "$@";
+}
+
+function to_perl_put()
+{
+  pto_perl toput "$@";
+}
+
+function cb_trafficrouter()
+{
+    (
+    set -o errexit;
+    cb;
+    rm -f {../../dist,traffic_router}/*{tomcat,router}* ../../traffic_router/tests/*.rpm;
+    time make debug traffic_router/traffic_router.rpm;
+    docker_stop_everything || true;
+    if [[ -n "$(docker images --quiet cdn-in-a-box_trafficrouter)" ]]; then
+        docker rmi cdn-in-a-box_trafficrouter;
+        docker image prune --force;
+        docker builder prune --force
+    fi;
+    cb_restart;
+    cbdc logs -f trafficrouter;
+    );
+};
+
+function cb_int()
+{
+  cbdc -f docker-compose.traffic-ops-test.yml up --force-recreate integration "$@";
+}
+
+function cb_update_to()
+{
+  (
+  set -o errexit -o nounset -o pipefail;
+  tog;
+  go build -gcflags 'all=-N -l';
+  docker cp traffic_ops_golang $(cbdc ps --quiet trafficops):/opt/traffic_ops/app/bin/
+  <<'DOCKER_COMMANDS' cbdc exec -T trafficops bash;
+  CDNCONF=/opt/traffic_ops/app/conf/cdn.conf;
+  DBCONF=/opt/traffic_ops/app/conf/production/database.conf;
+  RIAKCONF=/opt/traffic_ops/app/conf/production/riak.conf;
+  traffic_ops_golang_command=(./bin/traffic_ops_golang -cfg "$CDNCONF" -dbcfg "$DBCONF" -riakcfg "$RIAKCONF");
+  if [[ "$TO_DEBUG_ENABLE" == true ]]; then
+    traffic_ops_golang_command=(dlv '--check-go-version=false' '--accept-multiclient' '--continue' '--listen=:2345' '--headless=true' '--api-version=2' exec
+      "${traffic_ops_golang_command[0]}" -- "${traffic_ops_golang_command[@]:1}");
+  fi;
+  pkill -9 --full traffic_ops_golang;
+  sleep .1;
+  exec "${traffic_ops_golang_command[@]}" >/proc/1/fd/1 2>/proc/1/fd/2 & disown
+DOCKER_COMMANDS
+  echo 'Updated trafficops service.';
+  );
+}
+
+function cb_update_to_perl()
+{
+  (
+  set -o errexit -o nounset -o pipefail;
+  to;
+  docker cp app/lib $(cbdc ps --quiet trafficops-perl):/opt/traffic_ops/app;
+  <<'DOCKER_COMMANDS' cbdc exec -T trafficops-perl bash;
+  source /etc/bashrc;
+  set -o allexport;
+  PERL5_DEBUG_HOST=0.0.0.0;
+  PERL5_DEBUG_PORT=5000;
+  PERL5_DEBUG_ROLE=server;
+  MOJO_LISTEN="${TO_PERL_SCHEME}://*:${TO_PERL_PORT}?cert=${X509_CA_DIR}/${INFRA_FQDN}.crt&key=${X509_CA_DIR}/${INFRA_FQDN}.key&verify=0x00&ciphers=AES128-GCM-SHA256:HIGH:"'!RC4:!MD5:!aNULL:!EDH:!ED';
+  MOJO_INACTIVITY_TIMEOUT=$(( 60 * 60 * 24 )); # 24 hours
+  set +o allexport;
+
+  pkill -9 --full morbo;
+  sleep .1;
+  perl -d:Camelcadedb $TO_DIR/local/bin/morbo script/cdn >/proc/1/fd/1 2>/proc/1/fd/2 & disown
+DOCKER_COMMANDS
+  echo 'Updated trafficops-perl service.';
+  )
+}
+
+function cb_stop()
+{
+    cb;
+    cbdc stop;
+    cbdc rm --force;
+    if docker volume ls --quiet | grep -qe ^cdn-in-a-box; then
+        docker volume ls --quiet |
+            grep -e ^cdn-in-a-box |
+            xargs docker volume rm --force;
+    fi;
+}
+
+function cb_remove_volumes()
+{
+    if docker volume ls --quiet | grep -qe ^cdn-in-a-box; then
+        docker volume ls --quiet |
+            grep -e ^cdn-in-a-box |
+            xargs docker volume rm --force;
+    fi;
+}
+
+function cb_restart()
+{
+    (
+    set -o errexit;
+    cb;
+    cbdc down --remove-orphans --volumes;
+    cb_remove_volumes;
+    cbdc up --force-recreate -d;
+    cbdc logs -f trafficrouter;
+    );
+};
+
+function cb_rebuild_all_images()
+{
+    docker images |
+        grep '^cdn\|^centos\|^traffic' |
+        awk '{print $3}' |
+        xargs docker rmi --force;
+}
+
+function cb_to()
+{
+    cb;
+    cb_stop;
+    docker rmi --force trafficops-go trafficops-go-debug;
+    #docker rmi --force trafficops-go trafficops-go-debug trafficmonitor trafficmonitor-debug;
+    docker image prune --force
+    docker builder prune --force
+    (
+    set -o errexit;
+    rm -f ../../dist/*ops* traffic_ops/traffic_ops.rpm;
+    make debug traffic_ops/traffic_ops.rpm;
+    cbdc up --force-recreate -d;
+    cbdc logs -f trafficrouter;
+    #cb_restart;
+    );
+}
+
+function cb_api_tests()
+{
+  cbdc -f docker-compose.traffic-ops-test.yml rm --force --stop -v integration;
+  docker volume rm cdn-in-a-box_junit;
+  docker rmi cdn-in-a-box_integration;
+  docker_prune;
+  time cbdc -f docker-compose.traffic-ops-test.yml up integration;
+}
+
+function cb_rebuild_everything()
+{
+  cb;
+  cbdc down -v --remove-orphans;
+  docker_remove_networks;
+  docker rmi --force $(docker images --format={{.Repository}}:{{.Tag}} 'cdn-in-a-box*') $(docker images --format={{.Repository}}:{{.Tag}} 'traffic*');
+  docker_prune;
+  (
+  set -o errexit;
+  make very-clean;
+  local make=('make');
+  local debugging_compose=optional/docker-compose.debugging.yml;
+  if [[ -f "$debugging_compose" ]]; then
+    make+=('debug');
+  fi;
+  time "${make[@]}";
+  cb_restart;
+  )
+}
+
+function cb_perl_cb()
+{
+  # This does not rebuild the RPM, just the docker image
+  docker_stop_everything;
+  docker rmi trafficops-perl trafficops-perl-debug;
+  docker_prune;
+  cb_restart;
+}
+
+function cb_go_with_builder()
+{
+    atc;
+    cd infrastructure/cdn-in-a-box;
+    docker_stop_everything;
+    docker images --format='{{.Repository}}' |
+        grep ops |
+        xargs docker rmi --force;
+    rm -f ../../dist/*ops*;
+    (
+    cd ../..;
+    ./pkg -v -d;
+    );
+    make debug;
+    cbdc build;
+    cb_restart;
+}
