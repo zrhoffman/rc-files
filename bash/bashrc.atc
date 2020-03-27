@@ -548,6 +548,93 @@ DOCKER_COMMANDS
   )
 }
 
+function cb_update_tr()
+{(
+  set -o errexit -o nounset -o pipefail;
+  dist;
+  rm -f *traffic_router* *tomcat*;
+  cb;
+  tr_rpm=traffic_router/traffic_router.rpm;
+  tomcat_rpm=traffic_router/tomcat.rpm;
+  rm -f $tr_rpm $tomcat_rpm;
+  make debug $tr_rpm $tomcat_rpm;
+  declare container_id='';
+  container_id="$(cbdc ps --quiet trafficrouter)";
+  docker cp $tr_rpm "$container_id":/tmp/;
+  docker cp $tomcat_rpm "$container_id":/tmp/;
+  <<'DOCKER_COMMANDS' cbdc exec -T trafficrouter bash;
+  trap 'echo "Error on line ${LINENO} of docker exec"; exit 1' ERR;
+  set -o errexit -o nounset -o pipefail;
+  cd /tmp/;
+  rpm -Uvh --force --oldpackage --nodeps tomcat.rpm traffic_router.rpm || true;
+  set -o allexport;
+  PERL5_DEBUG_HOST=0.0.0.0;
+  PERL5_DEBUG_PORT=5000;
+  PERL5_DEBUG_ROLE=server;
+  INFRA_FQDN="$INFRA_SUBDOMAIN.$TLD_DOMAIN";
+  MOJO_LISTEN="${TO_PERL_SCHEME}://*:${TO_PERL_PORT}?cert=${X509_CA_DIR}/${INFRA_FQDN}.crt&key=${X509_CA_DIR}/${INFRA_FQDN}.key&verify=0x00&ciphers=AES128-GCM-SHA256:HIGH:"'!RC4:!MD5:!aNULL:!EDH:!ED';
+  MOJO_INACTIVITY_TIMEOUT=$(( 60 * 60 * 24 )); # 24 hours
+
+  function longer_dns_timeout() {
+    local day_in_ms dns_properties;
+    day_in_ms=$(( 1000 * 60 * 60 * 24 )); # Timing out debugging after 1 day seems fair
+    dns_properties=/opt/traffic_router/conf/dns.properties;
+    <<-DNS_CONFIG_LINES cat >> $dns_properties;
+      dns.tcp.timeout.task=$(( day_in_ms ))
+      dns.udp.timeout.task=$(( day_in_ms ))
+DNS_CONFIG_LINES
+  }
+
+  set +o allexport;
+  CATALINA_HOME="/opt/tomcat";
+  CATALINA_BASE="/opt/traffic_router";
+  CATALINA_OUT="$CATALINA_HOME/logs/catalina.log";
+  CATALINA_LOG="$CATALINA_HOME/logs/catalina.$(date +%Y-%m-%d).log";
+  CATALINA_PID="$CATALINA_BASE/temp/tomcat.pid";
+
+  CATALINA_OPTS="\
+    -server -Xms2g -Xmx8g \
+    -Djava.library.path=/usr/lib64:$CATALINA_BASE/lib:$CATALINA_HOME/lib \
+    -Dlog4j.configuration=file://$CATALINA_BASE/conf/log4j.properties \
+    -Dorg.apache.catalina.connector.Response.ENFORCE_ENCODING_IN_GET_WRITER=false \
+    -XX:+UseG1GC \
+    -XX:+UnlockExperimentalVMOptions \
+    -XX:InitiatingHeapOccupancyPercent=30";
+
+  if [[ "$TR_DEBUG_ENABLE" == true ]]; then
+      export JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,address=5005,server=y,suspend=n";
+      longer_dns_timeout;
+  fi;
+
+  JAVA_HOME=/opt/java
+  JAVA_OPTS="\
+    -Djava.library.path=/usr/lib64 \
+    -Dcache.config.json.refresh.period=5000 \
+    -Djava.awt.headless=true \
+    -Djava.security.egd=file:/dev/./urandom";
+
+  TO_PROPERTIES="$CATALINA_BASE/conf/traffic_ops.properties";
+  TM_PROPERTIES="$CATALINA_BASE/conf/traffic_monitor.properties";
+  LOGFILE="$CATALINA_BASE/var/log/traffic_router.log";
+  ACCESSLOG="$CATALINA_BASE/var/log/access.log";
+
+  export JAVA_HOME JAVA_OPTS;
+  export TO_PROPERTIES TM_PROPERTIES ;
+  export CATALINA_HOME CATALINA_BASE CATALINA_OPTS CATALINA_OUT CATALINA_PID;
+
+  pkill -9 --full 'org\.apache\.catalina\.startup\.Bootstrap';
+  sleep .1;
+
+  if [[ "$TR_DEBUG_ENABLE" == true ]]; then
+      /opt/tomcat/bin/catalina.sh jpda start >/proc/1/fd/1 2>/proc/1/fd/2 & disown;
+  else
+      /opt/tomcat/bin/catalina.sh run >/proc/1/fd/1 2>/proc/1/fd/2 & disown;
+  fi;
+DOCKER_COMMANDS
+  echo 'Updated trafficrouter service.';
+  )
+}
+
 function cb_stop()
 {
     cb;
