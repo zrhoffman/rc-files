@@ -483,7 +483,7 @@ function cb_trafficrouter()
     set -o errexit;
     cb;
     rm -f {../../dist,traffic_router}/*{tomcat,router}* ../../traffic_router/tests/*.rpm;
-    time make debug traffic_router/traffic_router.rpm;
+    time cb_make traffic_router/traffic_router.rpm;
     docker_stop_everything || true;
     if [[ -n "$(docker images --quiet cdn-in-a-box_trafficrouter)" ]]; then
         docker rmi cdn-in-a-box_trafficrouter;
@@ -557,7 +557,7 @@ function cb_update_tr()
   tr_rpm=traffic_router/traffic_router.rpm;
   tomcat_rpm=traffic_router/tomcat.rpm;
   rm -f $tr_rpm $tomcat_rpm;
-  make debug $tr_rpm $tomcat_rpm;
+  cb_make $tr_rpm $tomcat_rpm;
   declare container_id='';
   container_id="$(cbdc ps --quiet trafficrouter)";
   docker cp $tr_rpm "$container_id":/tmp/;
@@ -676,6 +676,16 @@ function cb_rebuild_all_images()
         xargs docker rmi --force;
 }
 
+function cb_make()
+{
+    local make=('make');
+    local debugging_compose=optional/docker-compose.debugging.yml;
+    if [[ -f "$debugging_compose" ]]; then
+      make+=('debug');
+    fi;
+    "${make[@]}" "$@";
+}
+
 function cb_to()
 {
     cb;
@@ -687,7 +697,7 @@ function cb_to()
     (
     set -o errexit;
     rm -f ../../dist/*ops* traffic_ops/traffic_ops.rpm;
-    make debug traffic_ops/traffic_ops.rpm;
+    time cb_make traffic_ops/traffic_ops.rpm;
     cbdc up --force-recreate -d;
     cbdc logs -f trafficrouter;
     #cb_restart;
@@ -713,12 +723,7 @@ function cb_rebuild_everything()
   (
   set -o errexit;
   make very-clean;
-  local make=('make');
-  local debugging_compose=optional/docker-compose.debugging.yml;
-  if [[ -f "$debugging_compose" ]]; then
-    make+=('debug');
-  fi;
-  time "${make[@]}";
+  time cb_make;
   cb_restart;
   )
 }
