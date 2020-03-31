@@ -484,7 +484,7 @@ function cb_trafficrouter()
     cb;
     rm -f {../../dist,traffic_router}/*{tomcat,router}* ../../traffic_router/tests/*.rpm;
     time cb_make traffic_router/traffic_router.rpm;
-    docker_stop_everything || true;
+    cbdc down --remove-orphans --volumes;
     if [[ -n "$(docker images --quiet cdn-in-a-box_trafficrouter)" ]]; then
         docker rmi cdn-in-a-box_trafficrouter;
         docker image prune --force;
@@ -709,17 +709,18 @@ function cb_api_tests()
   cbdc -f docker-compose.traffic-ops-test.yml rm --force --stop -v integration;
   docker volume rm cdn-in-a-box_junit;
   docker rmi cdn-in-a-box_integration;
-  docker_prune;
+  docker image prune --force;
+  docker builder prune --force
   time cbdc -f docker-compose.traffic-ops-test.yml up integration;
 }
 
 function cb_rebuild_everything()
 {
   cb;
-  cbdc down -v --remove-orphans;
-  docker_remove_networks;
+  cbdc down --remove-orphans --volumes;
   docker rmi --force $(docker images --format={{.Repository}}:{{.Tag}} 'cdn-in-a-box*') $(docker images --format={{.Repository}}:{{.Tag}} 'traffic*');
-  docker_prune;
+  docker image prune --force;
+  docker builder prune --force
   (
   set -o errexit;
   make very-clean;
@@ -731,9 +732,10 @@ function cb_rebuild_everything()
 function cb_perl_cb()
 {
   # This does not rebuild the RPM, just the docker image
-  docker_stop_everything;
+  cbdc down --remove-orphans --volumes;
   docker rmi trafficops-perl trafficops-perl-debug;
-  docker_prune;
+  docker image prune --force;
+  docker builder prune --force
   cb_restart;
 }
 
@@ -741,7 +743,7 @@ function cb_go_with_builder()
 {
     atc;
     cd infrastructure/cdn-in-a-box;
-    docker_stop_everything;
+    cbdc down --remove-orphans --volumes;
     docker images --format='{{.Repository}}' |
         grep ops |
         xargs docker rmi --force;
