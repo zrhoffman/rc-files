@@ -218,7 +218,7 @@ function cto()
 
   cb;
 
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/1.1/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/2.0/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' $*;
 DOCKER_COMMANDS
