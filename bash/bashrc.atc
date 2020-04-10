@@ -502,11 +502,12 @@ function cb_int()
 
 function cb_update_to()
 {
-  (
+  ( trap 'echo "Error on line ${LINENO} of cb_update_to"; exit 1' ERR;
   set -o errexit -o nounset -o pipefail;
   tog;
   go build -gcflags 'all=-N -l';
   docker cp traffic_ops_golang $(cbdc ps --quiet trafficops):/opt/traffic_ops/app/bin/
+  rm traffic_ops_golang;
   <<'DOCKER_COMMANDS' cbdc exec -T trafficops bash;
   CDNCONF=/opt/traffic_ops/app/conf/cdn.conf;
   DBCONF=/opt/traffic_ops/app/conf/production/database.conf;
