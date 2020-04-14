@@ -500,6 +500,47 @@ function cb_int()
   cbdc -f docker-compose.traffic-ops-test.yml up --force-recreate integration "$@";
 }
 
+function cb_update_tm()
+{
+  ( trap 'echo "Error on line ${LINENO} of cb_update_tm"; exit 1' ERR;
+  set -o errexit -o nounset -o pipefail;
+  tm;
+  go build -gcflags 'all=-N -l';
+  docker cp traffic_monitor $(cbdc ps --quiet trafficmonitor):/opt/traffic_monitor/bin/
+  rm traffic_monitor;
+  <<'DOCKER_COMMANDS' cbdc exec -T trafficmonitor bash;
+  trap 'echo "Error on line ${LINENO} of cb_update_tm docker exec"; exit 1' ERR;
+  set -o errexit -o nounset;
+  set o allexport;
+  TO_USER=$TO_ADMIN_USER
+  export TO_PASSWORD=$TO_ADMIN_PASSWORD
+  if [[ "$TM_DEBUG_ENABLE" == true ]]; then
+    day_in_ms=$(( 1000 * 60 * 60 * 24 )); # Timing out debugging after 1 day seems fair
+    set -o allexport;
+    HTTP_TIMEOUT_MS=$day_in_ms
+    SERVER_READ_TIMEOUT_MS=$day_in_ms
+    SERVER_WRITE_TIMEOUT_MS=$day_in_ms
+    set +o allexport;
+  else
+    set -o allexport;
+    HTTP_TIMEOUT_MS=2000
+    SERVER_READ_TIMEOUT_MS=10000
+    SERVER_WRITE_TIMEOUT_MS=10000
+    set +o allexport;
+  fi;
+  cd /opt/traffic_monitor;
+  traffic_monitor_command=(/opt/traffic_monitor/bin/traffic_monitor -opsCfg /opt/traffic_monitor/conf/traffic_ops.cfg -config /opt/traffic_monitor/conf/traffic_monitor.cfg);
+  pkill -9 --full traffic_monitor;
+  sleep .1;
+  if [[ "$TM_DEBUG_ENABLE" == true ]]; then
+    traffic_monitor_command=(dlv '--listen=:2344' '--accept-multiclient=true' '--continue' '--headless=true' '--api-version=2' exec "${traffic_monitor_command[0]}" -- "${traffic_monitor_command[@]:1}")
+  fi;
+  exec "${traffic_monitor_command[@]}" >/proc/1/fd/1 2>/proc/1/fd/2 & disown;
+DOCKER_COMMANDS
+  echo 'Updated trafficmonitor service.';
+  );
+}
+
 function cb_update_to()
 {
   ( trap 'echo "Error on line ${LINENO} of cb_update_to"; exit 1' ERR;
