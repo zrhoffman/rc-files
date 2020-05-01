@@ -144,7 +144,7 @@ function docs()
 function api()
 {
   atc;
-  cd docs/source/api/v2;
+  cd docs/source/api/v3;
 }
 
 function cbdc()
@@ -218,7 +218,7 @@ function cto()
 
   cb;
 
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/2.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/3.0/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' $*;
 DOCKER_COMMANDS
@@ -245,7 +245,7 @@ function cto_post()
 
   cb;
 
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/2.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/3.0/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' ${data_option} "\$(
       <<'POST_DATA' cat;
@@ -298,8 +298,8 @@ function cto_perl()
 
   cb;
 
-  #curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar $TO_PERL_SCHEME://$TO_PERL_HOST/api/2.0/';
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/2.0/';
+  #curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar $TO_PERL_SCHEME://$TO_PERL_HOST/api/3.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/3.0/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' $*;
 DOCKER_COMMANDS
@@ -326,7 +326,7 @@ function cto_perl_post()
 
   cb;
 
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/2.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/3.0/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' ${data_option} "\$(
       <<'POST_DATA' cat;
@@ -356,7 +356,7 @@ function pto()
     shift;
   fi;
 
-  toclient_command="$pto_command"' --api-version=2.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=https://$TO_HOST --request-headers --response-headers';
+  toclient_command="$pto_command"' --api-version=3.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=https://$TO_HOST --request-headers --response-headers';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${toclient_command} '${route}' "\$(
       <<'POST_DATA' cat;
@@ -417,7 +417,7 @@ function pto_perl()
   maybe_request_body="$1";
   shift;
 
-  toclient_command="$pto_command"' --api-version=2.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST';
+  toclient_command="$pto_command"' --api-version=3.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${toclient_command} '${route}' "\$(
       <<'POST_DATA' cat;
