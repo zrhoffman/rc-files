@@ -505,7 +505,7 @@ function cb_update_tm()
   ( trap 'echo "Error on line ${LINENO} of cb_update_tm"; exit 1' ERR;
   set -o errexit -o nounset -o pipefail;
   tm;
-  go build -gcflags 'all=-N -l';
+  GOOS=linux GOARCH=amd64 go build -gcflags 'all=-N -l';
   docker cp traffic_monitor $(cbdc ps --quiet trafficmonitor):/opt/traffic_monitor/bin/
   rm traffic_monitor;
   <<'DOCKER_COMMANDS' cbdc exec -T trafficmonitor bash;
@@ -546,7 +546,7 @@ function cb_update_to()
   ( trap 'echo "Error on line ${LINENO} of cb_update_to"; exit 1' ERR;
   set -o errexit -o nounset -o pipefail;
   tog;
-  go build -gcflags 'all=-N -l';
+  GOOS=linux GOARCH=amd64 go build -gcflags 'all=-N -l';
   docker cp traffic_ops_golang $(cbdc ps --quiet trafficops):/opt/traffic_ops/app/bin/
   rm traffic_ops_golang;
   <<'DOCKER_COMMANDS' cbdc exec -T trafficops bash;
