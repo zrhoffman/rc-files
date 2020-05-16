@@ -299,7 +299,7 @@ function cto_perl()
   cb;
 
   #curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar $TO_PERL_SCHEME://$TO_PERL_HOST/api/3.0/';
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/3.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar --insecure https://$TO_PERL_HOST/api/1.1/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' $*;
 DOCKER_COMMANDS
@@ -326,7 +326,7 @@ function cto_perl_post()
 
   cb;
 
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://$TO_PERL_HOST/api/3.0/';
+  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar --insecure https://$TO_PERL_HOST/api/1.1/';
   response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
     ${curl_command}'${route}' ${data_option} "\$(
       <<'POST_DATA' cat;
