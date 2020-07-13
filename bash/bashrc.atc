@@ -46,7 +46,7 @@ $([[ -n "$request_body" ]] && printf '%s\n' "$(echo "$request_body" | keys_to_fi
 $(echo $'\t'):caption: Request Example
 
 $(sanitize_cookie "$request_headers" | sed 's/^/'$'\t''/g')
-$(printf '\n%s\n' "$(echo "$request_body" | jq --tab | sed 's/^/'$'\t''/g')"; )
+$(printf '\n%s\n' "$(echo "$request_body" | jq --tab --sort-keys | sed 's/^/'$'\t''/g')"; )
 
 Response Structure
 ------------------
@@ -57,7 +57,7 @@ $(echo $'\t'):caption: Response Example
 
 $(sanitize_cookie "$response_headers" | sed 's/^/'$'\t''/g')
 
-$(echo "$body" | jq --tab | sed 's/^/'$'\t''/g')
+$(echo "$body" | jq --tab --sort-keys | sed 's/^/'$'\t''/g')
 CLIPBOARD_OUTPUT
 }
 
