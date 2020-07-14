@@ -176,7 +176,7 @@ function cbdc()
 
 function cto_login()
 {
-  cto_post user/login '{"u":"admin","p":"twelve"}';
+  cto_post user/login '{"u":"admin","p":"twelve12"}';
 }
 
 function cto_put()
@@ -261,7 +261,7 @@ DOCKER_COMMANDS
 
 function cto_perl_login()
 {
-  cto_perl_post user/login '{"u":"admin","p":"twelve"}';
+  cto_perl_post user/login '{"u":"admin","p":"twelve12"}';
 }
 
 function cto_perl_delete()
