@@ -773,16 +773,12 @@ function cb_api_tests()
 
 function cb_rebuild_everything()
 {
+  (set -o errexit;
   cb;
   cbdc down --remove-orphans --volumes;
-  docker rmi --force $(docker images --format={{.Repository}}:{{.Tag}} 'cdn-in-a-box*') $(docker images --format={{.Repository}}:{{.Tag}} 'traffic*');
-  docker image prune --force;
-  docker builder prune --force
-  (
-  set -o errexit;
-  make very-clean;
-  time cb_make;
-  cb_restart;
+  make debug native;
+  cbdc build
+  cb_restart
   )
 }
 
