@@ -104,6 +104,12 @@ function to()
     cd traffic_ops;
 }
 
+function too()
+{
+  atc;
+  cd traffic_ops_ort;
+}
+
 function toclient()
 {
   atc;
