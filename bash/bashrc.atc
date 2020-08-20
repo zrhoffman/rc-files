@@ -731,24 +731,10 @@ function cb_restart()
     );
 };
 
-function cb_rebuild_all_images()
-{
-    docker images |
-        grep '^cdn\|^centos\|^traffic' |
-        awk '{print $3}' |
-        xargs docker rmi --force;
-}
-
 function cb_make()
 {
-    local make=('make');
-    local debugging_compose=optional/docker-compose.debugging.yml;
-    if [[ -f "$debugging_compose" ]]; then
-      make+=('debug');
-    fi;
-    "${make[@]}" "$@";
+    make debug native
 }
-
 function cb_to()
 {
     cb;
