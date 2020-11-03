@@ -171,11 +171,8 @@ function cbdc()
     optional/docker-compose.socksproxy.expose-ports.yml
     #optional/docker-compose.grafana.yml
     #optional/docker-compose.grafana.expose-ports.yml
+    optional/docker-compose.debugging.yml
   );
-  local debugging_compose=optional/docker-compose.debugging.yml;
-  if [[ -f "$debugging_compose" ]]; then
-    compose_files+=("$debugging_compose");
-  fi;
   compose_files_length=${#compose_files[@]}
   docker_compose_command=(docker-compose);
   for (( index = 0; index < compose_files_length; index++ )); do
