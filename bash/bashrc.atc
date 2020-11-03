@@ -736,8 +736,9 @@ function cb_restart()
 
 function cb_make()
 {
-    make debug native
+    make debug native "$@"
 }
+
 function cb_to()
 {
     cb;
