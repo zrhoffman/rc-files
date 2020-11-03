@@ -771,7 +771,6 @@ function cb_rebuild_everything()
 {
   (set -o errexit;
   cb;
-  cbdc down --remove-orphans --volumes;
   time make debug native;
   time cbdc build --parallel
   cb_restart
