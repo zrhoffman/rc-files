@@ -92,6 +92,12 @@ function cb()
     cd infrastructure/cdn-in-a-box;
 }
 
+function ort()
+{
+  atc;
+  cd traffic_ops_ort;
+}
+
 function tm()
 {
     atc;
