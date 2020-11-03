@@ -618,14 +618,13 @@ function cb_update_tr()
 {(
   set -o errexit -o nounset -o pipefail;
   dist;
-  rm -f *traffic_router* *tomcat*;
   cb;
   tr_rpm=traffic_router/traffic_router.rpm;
   tomcat_rpm=traffic_router/tomcat.rpm;
-  rm -f $tr_rpm $tomcat_rpm;
-  cb_make $tr_rpm $tomcat_rpm;
   declare container_id='';
   container_id="$(cbdc ps --quiet trafficrouter)";
+  rm -f ../../dist/{*traffic_router*.rpm,*tomcat*.rpm}
+  cb_make debug "$tr_rpm" "$tomcat_rpm";
   docker cp $tr_rpm "$container_id":/tmp/;
   docker cp $tomcat_rpm "$container_id":/tmp/;
   <<'DOCKER_COMMANDS' cbdc exec -T trafficrouter bash;
