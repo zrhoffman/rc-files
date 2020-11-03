@@ -726,6 +726,7 @@ function cb_restart()
     (
     set -o errexit;
     cb;
+    cbdc kill;
     cbdc down --remove-orphans --volumes;
     cb_remove_volumes;
     cbdc up --force-recreate -d;
