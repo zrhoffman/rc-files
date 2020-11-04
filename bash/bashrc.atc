@@ -736,7 +736,8 @@ function cb_restart()
 
 function cb_make()
 {
-    make debug native "$@"
+  sudo rm -rf /tmp/go;
+  make debug native "$@";
 }
 
 function cb_to()
@@ -771,7 +772,7 @@ function cb_rebuild_everything()
 {
   (set -o errexit;
   cb;
-  time make debug native;
+  time cb_make;
   time cbdc build --parallel
   time cbdc build --parallel
   cb_restart
