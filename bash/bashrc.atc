@@ -773,6 +773,7 @@ function cb_rebuild_everything()
   cb;
   time make debug native;
   time cbdc build --parallel
+  time cbdc build --parallel
   cb_restart
   )
 }
