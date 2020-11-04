@@ -788,21 +788,3 @@ function cb_perl_cb()
   docker builder prune --force
   cb_restart;
 }
-
-function cb_go_with_builder()
-{
-    atc;
-    cd infrastructure/cdn-in-a-box;
-    cbdc down --remove-orphans --volumes;
-    docker images --format='{{.Repository}}' |
-        grep ops |
-        xargs docker rmi --force;
-    rm -f ../../dist/*ops*;
-    (
-    cd ../..;
-    ./pkg -v -d;
-    );
-    make debug;
-    cbdc build;
-    cb_restart;
-}
