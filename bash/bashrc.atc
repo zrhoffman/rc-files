@@ -762,10 +762,7 @@ function cb_api_tests()
 {
   cbdc -f docker-compose.traffic-ops-test.yml rm --force --stop -v integration;
   docker volume rm cdn-in-a-box_junit;
-  docker rmi cdn-in-a-box_integration;
-  docker image prune --force;
-  docker builder prune --force
-  time cbdc -f docker-compose.traffic-ops-test.yml up integration;
+  time cbdc -f docker-compose.traffic-ops-test.yml up --build integration;
 }
 
 function cb_rebuild_everything()
