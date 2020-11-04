@@ -14,8 +14,8 @@ function response_to_fields()
   fi;
   echo "$response_body" | jq '.response | keys' | tail -n+2 | head -n-1 | cut -d'"' -f2 | sed 's/.*/:\0:/g'
 }
-function prettify_output()
 
+function prettify_output()
 {
   local response request_headers request_body= response_headers body;
   response="$1";
@@ -92,6 +92,12 @@ function cb()
     cd infrastructure/cdn-in-a-box;
 }
 
+function ort()
+{
+  atc;
+  cd traffic_ops_ort;
+}
+
 function tm()
 {
     atc;
@@ -165,11 +171,8 @@ function cbdc()
     optional/docker-compose.socksproxy.expose-ports.yml
     #optional/docker-compose.grafana.yml
     #optional/docker-compose.grafana.expose-ports.yml
+    optional/docker-compose.debugging.yml
   );
-  local debugging_compose=optional/docker-compose.debugging.yml;
-  if [[ -f "$debugging_compose" ]]; then
-    compose_files+=("$debugging_compose");
-  fi;
   compose_files_length=${#compose_files[@]}
   docker_compose_command=(docker-compose);
   for (( index = 0; index < compose_files_length; index++ )); do
@@ -224,8 +227,8 @@ function cto()
 
   cb;
 
-  curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/3.0/';
-  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+  curl_command='curl --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/3.0/';
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T edge sh;
     ${curl_command}'${route}' $*;
 DOCKER_COMMANDS
   )";
@@ -252,7 +255,7 @@ function cto_post()
   cb;
 
   curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar https://${TO_HOST}.${INFRA_SUBDOMAIN}.${TLD_DOMAIN}/api/3.0/';
-  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T edge sh;
     ${curl_command}'${route}' ${data_option} "\$(
       <<'POST_DATA' cat;
 $data
@@ -306,7 +309,7 @@ function cto_perl()
 
   #curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar $TO_PERL_SCHEME://$TO_PERL_HOST/api/3.0/';
   curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar --insecure https://$TO_PERL_HOST/api/1.1/';
-  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T edge sh;
     ${curl_command}'${route}' $*;
 DOCKER_COMMANDS
   )";
@@ -333,7 +336,7 @@ function cto_perl_post()
   cb;
 
   curl_command='curl --verbose --silent --cookie-jar curl-jar --cookie curl-jar --insecure https://$TO_PERL_HOST/api/1.1/';
-  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T edge sh;
     ${curl_command}'${route}' ${data_option} "\$(
       <<'POST_DATA' cat;
 $data
@@ -363,7 +366,7 @@ function pto()
   fi;
 
   toclient_command="$pto_command"' --api-version=3.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=https://$TO_HOST --request-headers --response-headers';
-  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T edge sh;
     ${toclient_command} '${route}' "\$(
       <<'POST_DATA' cat;
 $request_body
@@ -424,7 +427,7 @@ function pto_perl()
   shift;
 
   toclient_command="$pto_command"' --api-version=3.0 --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST';
-  response="$(<<DOCKER_COMMANDS docker-compose exec -T mid sh;
+  response="$(<<DOCKER_COMMANDS docker-compose exec -T edge sh;
     ${toclient_command} '${route}' "\$(
       <<'POST_DATA' cat;
 $1
@@ -444,7 +447,7 @@ DOCKER_COMMANDS
 #  cb;
 #  pto_command="$1";
 #  shift;
-#  docker-compose exec mid sh -c "$pto_command"' --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST '"$*";
+#  docker-compose exec edge sh -c "$pto_command"' --insecure --to-user=$TO_ADMIN_USER --to-password=$TO_ADMIN_PASSWORD --to-url=$TO_PERL_SCHEME://$TO_PERL_HOST '"$*";
 #  )
 #}
 
@@ -615,14 +618,13 @@ function cb_update_tr()
 {(
   set -o errexit -o nounset -o pipefail;
   dist;
-  rm -f *traffic_router* *tomcat*;
   cb;
   tr_rpm=traffic_router/traffic_router.rpm;
   tomcat_rpm=traffic_router/tomcat.rpm;
-  rm -f $tr_rpm $tomcat_rpm;
-  cb_make $tr_rpm $tomcat_rpm;
   declare container_id='';
   container_id="$(cbdc ps --quiet trafficrouter)";
+  rm -f ../../dist/{*traffic_router*.rpm,*tomcat*.rpm}
+  cb_make debug "$tr_rpm" "$tomcat_rpm";
   docker cp $tr_rpm "$container_id":/tmp/;
   docker cp $tomcat_rpm "$container_id":/tmp/;
   <<'DOCKER_COMMANDS' cbdc exec -T trafficrouter bash;
@@ -724,6 +726,7 @@ function cb_restart()
     (
     set -o errexit;
     cb;
+    cbdc kill;
     cbdc down --remove-orphans --volumes;
     cb_remove_volumes;
     cbdc up --force-recreate -d;
@@ -733,8 +736,10 @@ function cb_restart()
 
 function cb_make()
 {
-    make debug native
+  sudo rm -rf /tmp/go;
+  make debug native "$@";
 }
+
 function cb_to()
 {
     cb;
@@ -757,18 +762,15 @@ function cb_api_tests()
 {
   cbdc -f docker-compose.traffic-ops-test.yml rm --force --stop -v integration;
   docker volume rm cdn-in-a-box_junit;
-  docker rmi cdn-in-a-box_integration;
-  docker image prune --force;
-  docker builder prune --force
-  time cbdc -f docker-compose.traffic-ops-test.yml up integration;
+  time cbdc -f docker-compose.traffic-ops-test.yml up --build integration;
 }
 
 function cb_rebuild_everything()
 {
   (set -o errexit;
   cb;
-  cbdc down --remove-orphans --volumes;
-  time make debug native;
+  time cb_make;
+  time cbdc build --parallel
   time cbdc build --parallel
   cb_restart
   )
@@ -782,22 +784,4 @@ function cb_perl_cb()
   docker image prune --force;
   docker builder prune --force
   cb_restart;
-}
-
-function cb_go_with_builder()
-{
-    atc;
-    cd infrastructure/cdn-in-a-box;
-    cbdc down --remove-orphans --volumes;
-    docker images --format='{{.Repository}}' |
-        grep ops |
-        xargs docker rmi --force;
-    rm -f ../../dist/*ops*;
-    (
-    cd ../..;
-    ./pkg -v -d;
-    );
-    make debug;
-    cbdc build;
-    cb_restart;
 }
