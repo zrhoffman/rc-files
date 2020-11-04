@@ -14,8 +14,8 @@ function response_to_fields()
   fi;
   echo "$response_body" | jq '.response | keys' | tail -n+2 | head -n-1 | cut -d'"' -f2 | sed 's/.*/:\0:/g'
 }
-function prettify_output()
 
+function prettify_output()
 {
   local response request_headers request_body= response_headers body;
   response="$1";
