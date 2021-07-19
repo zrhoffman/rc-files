@@ -204,7 +204,6 @@ function cbdc()
       docker_compose_command+=(-f "$compose_file");
     fi;
   done;
-  #local docker_compose_command=(docker-compose -f docker-compose.yml -f optional/docker-compose.vnc.yml -f optional/docker-compose.vnc.expose-ports.yml);
   "${docker_compose_command[@]}" "$@";
   )
 }
