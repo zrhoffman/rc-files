@@ -86,6 +86,22 @@ function tc()
 
 alias atc_db='docker run --rm --name db --env=POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:alpine';
 
+ans()
+{
+  atc;
+  cd infrastructure/ansible;
+}
+
+ats() {
+  atc;
+  cd traffic_server;
+}
+
+tsb() {
+  ats;
+  cd _tsb;
+}
+
 function cb()
 {
     atc;
@@ -96,6 +112,16 @@ function ort()
 {
   atc;
   cd traffic_ops_ort;
+}
+
+cache-config() {
+  atc;
+  cd cache-config;
+}
+
+t3c() {
+  cache-config;
+  cd t3c;
 }
 
 function tm()
@@ -110,10 +136,10 @@ function to()
     cd traffic_ops;
 }
 
-function too()
+function ts()
 {
   atc;
-  cd traffic_ops_ort;
+  cd traffic_stats;
 }
 
 function toclient()
@@ -587,6 +613,24 @@ function cb_update_to()
   exec "${traffic_ops_golang_command[@]}" >/proc/1/fd/1 2>/proc/1/fd/2 & disown
 DOCKER_COMMANDS
   echo 'Updated trafficops service.';
+  );
+}
+
+cb_update_t3c() {
+  ( trap 'echo "Error on line ${LINENO} of cb_update_t3c"; exit 1' ERR;
+  set -o errexit -o nounset -o pipefail -o xtrace;
+  cache-config;
+  for part in t3c*; do
+    if [[ "$part" == t3cutil ]]; then
+      continue;
+    fi;
+    (trap 'echo "Error on line ${LINENO} of building '"$part"'"; exit 1' ERR;
+    cd "$part";
+    GO111MODULE=off GOOS=linux GOARCH=amd64 go build -gcflags 'all=-N -l' -tags 'osusergo netgo';
+    docker cp "$part" $(cbdc ps --quiet edge):/usr/bin/
+    rm "$part";)
+  done;
+  echo 'Updated t3c.';
   );
 }
 
