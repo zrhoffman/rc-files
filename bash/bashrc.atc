@@ -747,13 +747,9 @@ DOCKER_COMMANDS
 function cb_stop()
 {
     cb;
-    cbdc stop;
-    cbdc rm --force;
-    if docker volume ls --quiet | grep -qe ^cdn-in-a-box; then
-        docker volume ls --quiet |
-            grep -e ^cdn-in-a-box |
-            xargs docker volume rm --force;
-    fi;
+    cbdc kill;
+    cbdc rm -v --force;
+    cbdc down --remove-orphans --volumes;
 }
 
 function cb_remove_volumes()
@@ -770,9 +766,7 @@ function cb_restart()
     (
     set -o errexit;
     cb;
-    cbdc kill;
-    cbdc down --remove-orphans --volumes;
-    cb_remove_volumes;
+    cb_stop;
     cbdc up --force-recreate -d;
     cbdc logs -f trafficrouter;
     );
