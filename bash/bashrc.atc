@@ -771,7 +771,6 @@ function cb_rebuild_everything()
   cb;
   time cb_make;
   time cbdc build --parallel
-  time cbdc build --parallel
   cb_restart
   )
 }
