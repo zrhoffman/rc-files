@@ -169,14 +169,14 @@ function cbdc()
     optional/docker-compose.static-subnet.yml
     optional/docker-compose.socksproxy.yml
     optional/docker-compose.socksproxy.expose-ports.yml
-    #optional/docker-compose.grafana.yml
-    #optional/docker-compose.grafana.expose-ports.yml
     optional/docker-compose.debugging.yml
+    #docker-compose.traffic-router-test.yml
   );
-  compose_files_length=${#compose_files[@]}
   docker_compose_command=(docker-compose);
-  for (( index = 0; index < compose_files_length; index++ )); do
-    docker_compose_command+=(-f "${compose_files[$index]}");
+  for compose_file in "${compose_files[@]}"; do
+    if [[ -e "$compose_file" ]]; then
+      docker_compose_command+=(-f "$compose_file");
+    fi;
   done;
   #local docker_compose_command=(docker-compose -f docker-compose.yml -f optional/docker-compose.vnc.yml -f optional/docker-compose.vnc.expose-ports.yml);
   "${docker_compose_command[@]}" "$@";
