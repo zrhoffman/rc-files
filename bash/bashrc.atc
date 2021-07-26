@@ -821,3 +821,39 @@ function cb_perl_cb()
   docker builder prune --force
   cb_restart;
 }
+
+function update_branches() {
+    ( set -o errexit;
+    my_remote=fillmein;
+    local branches_to_include=(fillmein);
+
+    local destination=metabranch;
+    local onto=apache/master newbranch='';
+    atc;
+    for remote in apache alficles ARMmaster17 bueale devanand dneuman64 ez hbeatty jhg03a jrushford mattjackson220 mitchell852 ocket8888 rawlinp rimashah25 rob05c shamrickus srijeet0406 TaylorCFrey z; do
+      echo fetching git remote $remote...;
+      git fetch $remote;
+    done;
+    git checkout "$onto";
+    for branch in "${branches_to_include[@]}"; do
+      echo "Rebasing ${branch}..."
+      if ! git rebase HEAD "$branch"; then
+        while
+          # CHANGELOG merge conflicts are the most common kind. This skips any
+          # merge conflicts due to CHANGELOG.md
+          git reset -- CHANGELOG.md;
+          git checkout -- CHANGELOG.md;
+          ! git rebase --continue;
+        do
+          echo yep;
+          sleep 1;
+        done;
+      fi;
+    done;
+
+
+    git branch -D "$destination" || true;
+    git checkout -b "$destination";
+    git push "$my_remote" "$destination" --force;
+    )
+}
